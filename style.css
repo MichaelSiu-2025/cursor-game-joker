@@ -684,67 +684,64 @@ body {
 }
 
 /* ==========================================
-   📱 手機/直屏專屬：完美自適應排版 (@media)
-   ========================================== */
-/* ==========================================
-   📱 終極優化：手機直屏 100% 一畫面到底（免滾動）
-   ========================================== */
-/* ==========================================
-   📱 終極完美修正：手機直屏 100% 裝入（絕不切斷按鈕）
-   ========================================== */
-/* ==========================================
-   📱 手機直屏：極致美學整容排版（100% 正圓與黃金比例）
+   📱 iPhone 實機完美優化：dvh 動態高度（100% 裝入免滾動）
    ========================================== */
 @media (max-width: 600px) {
+    /* 徹底鎖定 iOS 的屏幕，禁止任何拉上拉落的多餘晃動 */
     html, body {
-        max-height: 100vh;
-        overflow: hidden;
+        height: 100dvh !important;    /* 採用先進 dvh，完美扣除 iPhone 導航底欄 */
+        max-height: 100dvh !important;
+        overflow: hidden !important;
         padding: 0;
         margin: 0;
         background-color: #1a1a1a;
     }
 
     body {
-        padding: 3px;
+        padding: 4px;
         display: flex;
         justify-content: center;
         align-items: center;
+        box-sizing: border-box;
     }
     
-    /* 賭檯外框壓縮，將更多像素留給卡牌和籌碼 */
+    /* 賭檯本體：精準鎖定在 iPhone 可見屏幕內 */
     .casino-table {
         border-width: 4px;
         border-radius: 12px;
-        padding: 6px 8px; 
+        padding: 6px; 
         max-width: 100%;
-        height: calc(100vh - 6px); 
+        width: 100%;
+        height: calc(100dvh - 8px) !important; /* 動態高度完美契合 */
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        gap: 3px;
+        justify-content: space-between; /* 均勻拉開頂、中、底三大區塊 */
+        gap: 2px;
+        box-sizing: border-box;
     }
 
     /* 頂部訊息欄 */
     .game-message {
         font-size: 11px;
         padding: 3px 6px;
-        border-radius: 10px;
+        border-radius: 8px;
+        margin-bottom: 2px;
     }
 
-    /* 主要核心區 */
+    /* 主要核心區：壓縮垂直空間，為底部按鈕騰出大量安全像素 */
     .main-content-layout {
         flex-direction: column;
         gap: 0px;
         margin: 2px 0;
         flex: 1;
         display: flex;
-        justify-content: space-around; 
+        justify-content: space-between; 
     }
 
     /* 左邊普通牌局區 */
     .game-play-area {
         width: 100%;
-        gap: 10px !important; 
+        gap: 4px !important; /* 壓縮莊家與玩家之間的空隙 */
     }
 
     /* 莊家與公牌水平合體列 */
@@ -752,192 +749,139 @@ body {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        gap: 6px; 
+        gap: 4px; 
         width: 100%;
-        padding: 0;
     }
 
     .section-title {
-        font-size: 10px;
+        font-size: 9px;
         margin: 1px 0;
-        letter-spacing: 0.5px;
     }
 
-    /* 【核心修正】國際標準 1:1.4 黃金比例啤牌，絕不變形成長條狀！ */
+    /* 啤牌尺寸：為適應 iPhone 導航欄，寬度微調至 48px，高度 67px，維持 1:1.4 黃金比例 */
     .card {
-        width: 52px !important;
-        height: 73px !important; /* 完美比例 */
-        padding: 3px;
-        border-radius: 5px;
+        width: 48px !important;
+        height: 67px !important; 
+        padding: 2px;
+        border-radius: 4px;
     }
     
-    /* 微調牌面大字體 */
-    .card-index-num { font-size: 16px !important; }
-    .card-index-suit { font-size: 13px !important; }
-    .card-single-center-suit { font-size: 20px !important; }
+    .card-index-num { font-size: 14px !important; }
+    .card-index-suit { font-size: 11px !important; }
+    .card-single-center-suit { font-size: 18px !important; }
 
-    /* 右邊整合面板 */
-    .right-side-panel {
-        width: 100%;
-        gap: 0px !important;
-    }
-
-    /* 右上角手機公牌盒 */
+    /* 右右上角手機公牌盒 */
     .community-section {
-        background: rgba(255, 215, 0, 0.02) !important; 
+        background: transparent !important; 
         border: 1px dashed rgba(255, 215, 0, 0.15) !important;
-        padding: 2px 4px !important;
+        padding: 2px !important;
         margin: 0 !important;
-        width: auto !important;
     }
+    .community-title { font-size: 8px !important; }
+    .card-community { width: 48px !important; height: 67px !important; }
 
-    .community-title {
-        font-size: 8px !important;
-        margin-bottom: 1px !important;
-    }
-
-    /* 公牌卡片尺寸同步 */
-    .card-community {
-        width: 52px !important; 
-        height: 73px !important; 
-    }
-
-    /* 
-       讓整個下注區網格擁有定位基準，
-       並把 .info-btn 改為相對於最右側 PLAY 圈網格的絕對定位。
-    */
+    /* 核心變革：5個投注圈，高度大幅縮減至 50px，確保不頂開下方按鈕 */
     .betting-area {
         width: 100%;
         display: grid;
         grid-template-columns: repeat(5, 1fr); 
-        grid-template-rows: 60px;
+        grid-template-rows: 50px; /* 縮矮 */
         gap: 4px;
-        padding: 4px;
-        border-radius: 10px;
+        padding: 2px;
+        border-radius: 8px;
         background: rgba(0, 0, 0, 0.1);
-        position: relative; /* 定位基準 */
+        position: relative;
     }
-    
-    /* 
-       核心修正：取消所有 Margin 挪移，改為相對於投注區最右側的精密定位！
-       我們將它精準地「懸掛」在 PLAY 圈的最上方外邊緣，與圓圈完美合體，絕不遮字！
-    */
+    .bet-zone-placeholder { display: none; }
+
+    /* 投注圈強制正圓形，永不變形 */
+    .bet-zone {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        height: auto !important; 
+        border: 1.5px double rgba(255, 215, 0, 0.25) !important;
+    }
+    .zone-label { font-size: 7.5px; transform: scale(0.8); }
+    .bet-chip { width: 18px; height: 18px; font-size: 7.5px; }
+
+    /* 【賠率說明】精緻懸浮在 PLAY 圈最上方边缘，絕不遮字，且絕對跟隨網格 */
     .info-btn {
         position: absolute !important;
-        /* 定位在最右側第五格 (PLAY 圈) 的上方位置 */
-        top: 460px !important;       /* 【關鍵】原地往上飄 12px，剛好架在圓圈的頭頂上 */
-        right: 4px !important;        /* 靠右對齊 PLAY 圈 */
-        width: calc(20% - 6px) !important; /* 寬度自動與下方的 PLAY 圓圈格完美拉齊 */
-        
-        height: 14px !important;     /* 做成一個極其精緻、貼合邊緣的弧形小標籤 */
+        top: 55px !important;      
+        right: 4px !important;       
+        width: 52px !important;
+        height: 13px !important;
         padding: 0 !important;
-        font-size: 8px !important;   /* 字體精細化 */
-        line-height: 14px !important;
-        text-align: center !important;
+        font-size: 8px !important;
+        line-height: 13px !important;
         border-radius: 8px !important;
-        background: rgba(15, 20, 28, 0.9) !important; /* 採用高質感的黑金對比底色 */
-        border: 1px solid #ffd700 !important;        /* 亮金色邊框 */
-        box-shadow: 0 2px 4px rgba(0,0,0,0.4) !important;
+        background: rgba(15, 20, 28, 0.9) !important;
+        border: 1px solid #ffd700 !important;
         z-index: 10;
-        white-space: nowrap !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-    }
-
-    /* 恢復純淨的 6 格網格排版 (1錢包 + 4籌碼 + 1細清空) */
-    .chip-selector {
-        display: grid;
-        grid-template-columns: 1.4fr repeat(4, 38px) 50px; 
-        gap: 4px;
-        align-items: center;
-        width: 100%;
-    }
-
-    .bet-zone-placeholder {
-        display: none;
-    }
-
-    /* 投注圈本體：強制 1:1 正圓，拒絕被壓扁成橢圓形！ */
-    .bet-zone {
-        width: 100%;
-        aspect-ratio: 1 / 1; /* 強制保持完美的正圓形 */
-        height: auto !important; 
-        border: 1.5px double rgba(255, 215, 0, 0.3) !important;
-        padding: 2px;
-    }
-    
-    .zone-label {
-        font-size: 8px;
-        transform: scale(0.8); 
-        margin-bottom: 0px;
-        white-space: nowrap;
-    }
-
-    /* 投注圈內的小籌碼 */
-    .bet-chip {
-        width: 22px;
-        height: 22px;
-        font-size: 8px;
     }
 
     /* 底部控制面板 */
     .control-panel {
         padding-top: 2px;
         gap: 4px;
-    }
-
-
-    /* 錢包盒 */
-    .player-wallet {
-        width: 100% !important;
-        height: 38px; 
-        padding: 0 4px;
-        border-radius: 6px;
-    }
-    .wallet-icon { font-size: 14px; margin-right: 2px; }
-    .wallet-label { font-size: 7px; }
-    .wallet-amount { font-size: 10px; }
-
-    /* 籌碼：手機版精緻正圓 */
-    .chip {
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-    }
-
-    .chip-100 { font-size: 10px !important; border-width: 1.5px !important; }  
-    .chip-500 { font-size: 10px !important; border-width: 1.5px !important; }  
-    .chip-1000 { font-size: 8px !important; border-width: 1.5px !important; } 
-    .chip-10000 { font-size: 7px !important; border-width: 1.5px !important; }
-
-    /* 清空與說明按鈕 */
-    /* 1. 【清空下注】縮細並成功塞入籌碼同行最右邊 */
-    .clear-btn {
-        grid-column: auto !important; /* 解除原本佔滿整行的限制 */
-        width: 50px !important;
-        height: 38px !important;     /* 高度同籌碼、錢包完全平齊 */
-        font-size: 10px !important;   /* 字體縮細 */
-        padding: 0 !important;
-        white-space: normal !important; /* 允許文字自動斷行（清空/下注） */
-        line-height: 1.1 !important;
-        border-radius: 6px !important;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+    }
+
+    /* 錢包與籌碼列：固定為 34px 精緻小巧尺寸 */
+    .chip-selector {
+        display: grid;
+        grid-template-columns: 1.3fr repeat(4, 34px) 42px; 
+        gap: 3px;
         align-items: center;
     }
 
-    /* 最底部的動作按鈕欄 */
+    .player-wallet {
+        width: 100% !important;
+        height: 34px; 
+        padding: 0 4px;
+    }
+    .wallet-icon { font-size: 13px; }
+    .wallet-label { font-size: 6.5px; }
+    .wallet-amount { font-size: 9.5px; }
+
+    .chip {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+    }
+    .chip-100 { font-size: 9px !important; }  
+    .chip-500 { font-size: 9px !important; }  
+    .chip-1000 { font-size: 7.5px !important; } 
+    .chip-10000 { font-size: 6.5px !important; }
+
+    /* 清空下注按鈕 */
+    .clear-btn {
+        width: 42px !important;
+        height: 34px !important;
+        font-size: 8.5px !important;
+        border-radius: 4px !important;
+    }
+
+    /* 最底部的動作按鈕欄：百分之百強制浮出在 iPhone 底欄上方！ */
     .action-buttons {
         width: 100%;
-        gap: 5px;
+        gap: 4px;
     }
 
     .btn {
         flex: 1;
         padding: 8px 0 !important; 
         font-size: 11px;
-        border-radius: 5px;
+        border-radius: 4px;
+        height: 34px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
+
 
