@@ -18,15 +18,27 @@
                 <!-- 主要遊戲核心區（左邊純牌局、右邊公牌與投注） -->
         <div class="main-content-layout">
             
-            <!-- 左邊：牌局區域 (已移除中央公牌，釋放垂直空間) -->
+            <!-- 左邊：主要牌局與公牌區域 (公牌已完美融入頂部) -->
             <div class="game-play-area">
-                <!-- 莊家區 -->
-                <div class="dealer-section">
-                    <div class="section-title">莊家 (DEALER) <span class="qualify-info">(Q 或以上成局)</span></div>
-                    <div class="cards-container" id="dealer-cards">
-                        <div class="card card-back"></div>
-                        <div class="card card-back"></div>
-                        <div class="card card-back"></div>
+                <!-- 莊家與公牌全新並排容器 -->
+                <div class="dealer-and-community-row">
+                    <!-- 莊家區 -->
+                    <div class="dealer-section">
+                        <div class="section-title">莊家 (DEALER) <span class="qualify-info">(Q+)</span></div>
+                        <div class="cards-container" id="dealer-cards">
+                            <div class="card card-back"></div>
+                            <div class="card card-back"></div>
+                            <div class="card card-back"></div>
+                        </div>
+                    </div>
+
+                    <!-- 【全新搬遷】累進大獎公牌區 (與莊家並排) -->
+                    <div class="community-section">
+                        <div class="community-title">JACKPOT 公牌</div>
+                        <div class="cards-container" id="community-cards">
+                            <div class="card card-back card-community"></div>
+                            <div class="card card-back card-community"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -41,23 +53,13 @@
                 </div>
             </div>
 
-            <!-- 右邊：全新整合面板 (公牌在上方 + 下注區在下方) -->
+            <!-- 右邊：全新整合面板 (已移除公牌，純淨下注) -->
             <div class="right-side-panel">
-                
-                <!-- 【已搬遷到此】累進大獎公牌區 -->
-                <div class="community-section">
-                    <div class="community-title">JACKPOT 公牌 (COMMUNITY CARDS)</div>
-                    <div class="cards-container" id="community-cards">
-                        <div class="card card-back card-community"></div>
-                        <div class="card card-back card-community"></div>
-                    </div>
-                </div>
-
                 <!-- 右下：投注區 (3行2列) -->
                 <div class="betting-area">
                     <!-- 第一行 -->
                     <div class="bet-zone side-bet" id="zone-jackpot">
-                        <div class="zone-label">JACKPOT<br><span class="jackpot-pool">$6,225,485</span></div>
+                        <div class="zone-label">JACKPOT<br><span class="jackpot-pool">$25,480</span></div>
                         <div class="bet-chip" id="chip-jackpot">0</div>
                     </div>
                     <div class="bet-zone side-bet" id="zone-sixcard">
@@ -80,10 +82,8 @@
                         <div class="zone-label">PLAY</div>
                         <div class="bet-chip" id="chip-play">0</div>
                     </div>
-                    <!-- 隱形占位符 -->
                     <div class="bet-zone-placeholder"></div>
                 </div>
-
             </div>
 
         </div>
@@ -98,7 +98,7 @@
                     <span class="wallet-icon">💰</span>
                     <div class="wallet-info">
                         <span class="wallet-label">WALLET</span>
-                        <span class="wallet-amount">$<span id="total-balance">5000</span></span>
+                        <span class="wallet-amount">$<span id="total-balance">50000</span></span>
                     </div>
                 </div>
 

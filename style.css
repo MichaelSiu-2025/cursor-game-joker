@@ -81,6 +81,14 @@ body {
     align-items: center;
 }
 
+.dealer-and-community-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px; /* 電腦屏幕大，留出舒服的間距 */
+    width: 100%;
+}
+
 .section-title {
     color: rgba(255,255,255,0.6);
     font-size: 14px;
@@ -678,142 +686,277 @@ body {
 /* ==========================================
    📱 手機/直屏專屬：完美自適應排版 (@media)
    ========================================== */
+/* ==========================================
+   📱 終極優化：手機直屏 100% 一畫面到底（免滾動）
+   ========================================== */
 @media (max-width: 600px) {
-    /* 1. 調整賭檯外框與內邊距，騰出更多手機空間 */
+    /* 全局鎖定：確保手機版絕對不留白、不溢出、不允許滾動 */
+    html, body {
+        max-height: 100vh;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+
     body {
-        padding: 5px;
+        padding: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .casino-table {
-        border-width: 6px; /* 縮細木質外框 */
-        border-radius: 20px;
-        padding: 12px;
+        border-width: 5px;
+        border-radius: 16px;
+        padding: 10px;
         max-width: 100%;
-        gap: 10px;
+        height: calc(100vh - 8px); /* 撐滿手機全屏高度 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 5px;
     }
 
-    /* 2. 核心大變身：將左右並排 (Flex-row) 變成 上下垂直並排 (Flex-column) */
+    /* 頂部訊息欄：縮窄上下內邊距 */
+    .game-message {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    /* 主要核心區：改回上下垂直流，但極度壓縮垂直間距 */
     .main-content-layout {
         flex-direction: column;
-        gap: 15px;
-        margin: 10px 0;
+        gap: 8px;
+        margin: 5px 0;
+        flex: 1;
+        justify-content: space-around;
     }
 
-    /* 3. 牌局區域：縮小牌與牌的距離 */
+    /* 左邊普通牌局區 */
     .game-play-area {
         width: 100%;
-        gap: 12px;
+        gap: 8px;
     }
 
-    /* 4. 啤牌尺寸等比例縮小：確保在細手機屏幕也不會擠爆 */
+    .section-title {
+        font-size: 11px;
+        margin: 2px 0;
+    }
+
+    /* 啤牌尺寸：等比例縮小，確保手機版精緻且不撐開畫面 */
     .card {
-        width: 68px !important;
-        height: 98px !important;
-        padding: 5px;
+        width: 62px !important;
+        height: 88px !important;
+        padding: 4px;
     }
     
-    /* 再次微調啤牌大字體的字號，保持精緻 */
-    .card-index-num { font-size: 24px !important; }
-    .card-index-suit { font-size: 18px !important; }
-    .card-single-center-suit { font-size: 32px !important; }
+    /* 微調牌面特大字體，完美適應縮小後的卡片 */
+    .card-index-num { font-size: 20px !important; }
+    .card-index-suit { font-size: 15px !important; }
+    .card-single-center-suit { font-size: 26px !important; }
 
-    /* 5. 右側控制面板搬到中間：寬度自適應填滿 */
+    /* 右邊整合面板：在手機上寬度 100% 自適應 */
     .right-side-panel {
         width: 100%;
-        flex-direction: row; /* 讓公牌與投注網格在手機上左右並排 */
-        align-items: flex-start;
-        gap: 10px;
+        flex-direction: column; /* 讓公牌和投注圈在右側面板內垂直排 */
+        gap: 8px;
     }
 
-    /* 6. 手機版公牌盒：直立擺放，節省橫向寬度 */
+    /* 公牌區：改回橫向並排，且縮小尺寸 */
     .community-section {
-        flex: 1;
-        padding: 6px;
+        padding: 4px;
+        border-radius: 10px;
+    }
+    .community-title {
+        font-size: 10px;
+        margin-bottom: 3px;
     }
     .community-section .cards-container {
-        flex-direction: column; /* 讓 2 張公牌上下排 */
+        flex-direction: row; /* 2張公牌橫向排 */
         gap: 8px;
         min-height: auto;
     }
     .card-community {
-        width: 58px !important;
-        height: 84px !important;
+        width: 50px !important;
+        height: 72px !important;
+    }
+    .card-community .card-index-num { font-size: 16px !important; }
+    .card-community .card-index-suit { font-size: 12px !important; }
+    .card-community .card-single-center-suit { font-size: 22px !important; }
+
+    /* 核心變革：把 3x2 網格拍平成【1行5列】的打橫投注區！ */
+    .betting-area {
+        width: 100%;
+        grid-template-columns: repeat(5, 1fr); /* 5個圈打橫排成一排 */
+        grid-template-rows: 68px;              /* 高度大幅縮減至 68px */
+        gap: 5px;
+        padding: 6px;
+        border-radius: 12px;
     }
 
-    /* 7. 手機版 3x2 投注區：微調格子大小 */
-    .betting-area {
-        flex: 1.2;
-        grid-template-columns: repeat(2, 1fr); /* 均分剩餘寬度 */
-        grid-template-rows: repeat(3, 72px);    /* 縮矮高度，留空間給下方按鈕 */
-        gap: 8px;
-        padding: 10px;
-        border-radius: 12px;
+    /* 隱藏那個用來對齊的空白占位符，免得浪費橫向空間 */
+    .bet-zone-placeholder {
+        display: none;
     }
 
     .bet-zone {
         width: 100%;
         height: 100%;
+        border-width: 2px;
     }
     
     .zone-label {
-        font-size: 9px;
+        font-size: 8px;
+        transform: scale(0.9); /* 讓英文字稍微縮小防止斷行 */
+        margin-bottom: 2px;
     }
 
     .bet-chip {
-        width: 32px;
-        height: 32px;
-        font-size: 10px;
+        width: 28px;
+        height: 28px;
+        font-size: 9px;
+        border-width: 1.5px;
     }
 
-    /* 8. 底部控制列：全面改為適合單手操作的大格子 */
+    /* 底部控制面板：極度緊湊化 */
     .control-panel {
-        padding-top: 10px;
-        gap: 10px;
-    }
-
-    .chip-selector {
-        grid-template-columns: 1fr repeat(4, 46px) 1fr; /* 隱藏右側說明鈕，重新排版 */
-        grid-template-rows: auto;
+        padding-top: 5px;
         gap: 6px;
     }
 
-    /* 讓錢包和籌碼等高 */
+    /* 錢包與籌碼列：使用 Grid 自動均分空間 */
+    /* ==========================================
+       📱 手機版籌碼外觀與對齊徹底修復版
+       ========================================== */
+
+    /* 重新精密計算底部的 Grid，確保籌碼有固定寬高，不會被屏幕拉扁 */
+    .chip-selector {
+        display: grid;
+        /* 錢包(自適應剩餘空間) + 4粒固定 42px 寬度的正圓籌碼 */
+        grid-template-columns: 1fr repeat(4, 42px); 
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+    }
+
+    /* 錢包盒子高度微調，與新版 42px 籌碼完美平齊平衡 */
     .player-wallet {
         width: 100% !important;
-        height: 46px;
+        height: 42px; /* 降為 42px */
         padding: 0 6px;
+        border-radius: 8px;
     }
-    .wallet-icon { font-size: 18px; }
-    .wallet-amount { font-size: 12px; }
+    .wallet-icon { font-size: 16px; margin-right: 3px; }
+    .wallet-label { font-size: 8px; }
+    .wallet-amount { font-size: 11px; }
 
+    /* 核心修復：強制鎖定籌碼為 42px * 42px 的絕對正圓形，絕不變形！ */
     .chip {
-        width: 46px;
-        height: 46px;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        letter-spacing: -0.8px; /* 緊湊字距讓 10000 也能塞入 42px 內 */
     }
 
-    /* 讓 清空下注 同 賠率說明 搬去最下方，變成兩粒大按鈕方便大拇指按 */
+    /* 在細屏幕手機上，微調邊框厚度與內陰影，防止留白區域被吃掉 */
+    .chip-100 { 
+        font-size: 11px !important; 
+        border: 2.5px dashed #1a1a1a !important; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 0 0 1.5px #1a1a1a !important; 
+    }  
+
+    .chip-500 { 
+        font-size: 11px !important; 
+        border: 2.5px dashed #8e44ad !important; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 0 0 1.5px #8e44ad !important; 
+    }  
+
+    .chip-1000 { 
+        font-size: 9px !important; /* 四位數大碼，縮小字體完美包覆 */
+        border: 2.5px dashed #f1c40f !important; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 0 0 1.5px #f1c40f !important; 
+    } 
+
+    .chip-10000 { 
+        font-size: 7.5px !important; /* 萬元大碼，在手機上用 7.5px 清晰不擠邊 */
+        border: 2.5px dashed #c0392b !important; 
+        box-shadow: 0 2px 6px rgba(192, 57, 43, 0.2), inset 0 0 0 1.5px #c0392b !important; 
+    }
+
+    /* 手機版被選中時的高亮浮起特效微調 */
+    .chip.active-chip {
+        transform: translateY(-4px) scale(1.05) !important;
+        box-shadow: 0 6px 12px rgba(255,215,0,0.5), inset 0 0 0 1.5px #ffd700 !important;
+        border-color: #ffd700 !important;
+    }
+
+    /* 清空與說明按鈕：不參與上面的籌碼 Grid，單獨改為橫跨全寬的兩粒精緻按鈕 */
     .clear-btn, .info-btn {
-        grid-column: span 3; /* 各佔一半寬度 */
-        height: 38px;
+        grid-column: span 5; /* 讓它們在下一行橫跨整行 5 格格子寬度 */
+        height: 34px;
         width: 100%;
+        font-size: 12px !important;
+        border-radius: 6px;
     }
 
-    /* 動作按鈕大合集 (發牌、加注、下一局) */
+    /* 最底部的動作按鈕欄 */
     .action-buttons {
         width: 100%;
-        gap: 8px;
+        gap: 6px;
     }
 
     .btn {
-        flex: 1; /* 平分屏幕寬度 */
-        padding: 10px 0;
-        font-size: 12px;
-        border-radius: 8px;
+        flex: 1;
+        padding: 8px 0;
+        font-size: 11px;
+        border-radius: 6px;
     }
-    
-    /* 頂部戰報：微調字體大小 */
-    .game-message {
-        font-size: 13px;
-        padding: 6px 10px;
+
+        /* ==========================================
+       📱 手機版：莊家與公牌水平合體版
+       ========================================== */
+    .dealer-and-community-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 8px; /* 緊湊靠齊 */
+        width: 100%;
+        padding: 0 4px;
     }
+
+    /* 調整主要區域的垂直間距：中間變得超級寬落舒服 */
+    .game-play-area {
+        gap: 30px; /* 拉大莊家(連公牌)與下方玩家手牌的對決空間 */
+    }
+
+    /* 搬去右上角後的手機公牌盒：縮窄、去底色，融入背景 */
+    .community-section {
+        background: transparent !important; /* 拿走背景，看起來更像一個大牌局 */
+        border: 1px dashed rgba(255, 215, 0, 0.2) !important;
+        padding: 4px 6px !important;
+        margin: 0 !important;
+        width: auto !important;
+    }
+
+    .community-title {
+        font-size: 9px !important;
+        color: #ff7675;
+        margin-bottom: 2px !important;
+    }
+
+    /* 右側整合面板：在手機上不需要再有多餘的高度撐開 */
+    .right-side-panel {
+        width: 100%;
+        gap: 0px !important;
+    }
+
+    /* 公牌專屬卡片尺寸：與莊家牌拉到差不多大，視覺上極之對稱 */
+    .card-community {
+        width: 62px !important; /* 完美同步成跟普通牌一樣寬 */
+        height: 88px !important; /* 高度完全齊平 */
+    }
+
 }
