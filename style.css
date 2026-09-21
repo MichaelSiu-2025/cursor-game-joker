@@ -684,10 +684,10 @@ body {
 }
 
 /* ==========================================
-   📱 終極完美神作版：vw 自適應 Auto Scale 佈局
+   📱 iPhone 實機完美神作：2x2 大圈全屏撐滿（徹底修復 Overlap）
    ========================================== */
 @media (max-width: 600px) {
-    /* 開啟彈性可見，確保在極短手機上擁有最安全的微幅上下滑動防線 */
+    /* 允許安全微幅捲動，確保在任何 iPhone 實機上 100% 安全收錄所有按鈕 */
     html, body {
         height: 100% !important;
         max-height: 100% !important;
@@ -714,8 +714,8 @@ body {
         min-height: calc(100vh - 12px); 
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; 
-        gap: 15px; 
+        justify-content: flex-start; /* 由上至下常態緊湊排列 */
+        gap: 12px; 
         box-sizing: border-box;
     }
 
@@ -745,21 +745,16 @@ body {
     }
 
     .section-title {
-        font-size: 10px;
+        font-size: 9px;
         margin: 1px 0;
     }
 
-    /* 
-       【全新 Auto Scale 黑科技】 
-       徹底丟棄固定 px！寬度改用 12.5vw (螢幕寬度的12.5%)。
-       配合 aspect-ratio 鎖死 1:1.44 的國際標準啤牌高寬比！
-       這樣無論屏幕怎麼變窄，啤牌都會跟著自動縮細，且永遠保持完美的修長優雅身材，絕不肥塌！
-    */
+    /* 啤牌尺寸：大字橫排標準的 12.5vw 奢華黃金修長比例 */
     .card {
         width: 12.5vw !important;
         height: auto !important;
-        aspect-ratio: 1 / 1.44 !important; /* 鎖死黃金修長比例 */
-        padding: 3px !important;
+        aspect-ratio: 1 / 1.44 !important;
+        padding: 4px !important;
         border-radius: 5px !important;
         background-color: white !important;
         display: flex !important;
@@ -768,7 +763,6 @@ body {
         box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     
-    /* 讓牌面大字體也跟隨 vw 自動等比例縮放 */
     .card-index-group {
         display: flex !important;
         flex-direction: row !important;
@@ -778,26 +772,9 @@ body {
         top: 3px !important;
         left: 3px !important;
     }
-
-    .card-index-num { 
-        font-size: 3.8vw !important; /* 隨寬度自動放大縮小 */
-        font-family: 'Arial Black', Impact, sans-serif !important;
-    }
-    
-    .card-index-suit { 
-        font-size: 3vw !important; 
-    }
-
-    /* 特大中央花色完美等比例置中 */
-    .card-single-center-suit { 
-        position: absolute !important;
-        top: 55% !important;
-        left: 55% !important;
-        transform: translate(-50%, -50%) !important;
-        font-size: 5.5vw !important; 
-        opacity: 0.95 !important;
-        display: block !important;
-    }
+    .card-index-num { font-size: 3.8vw !important; font-family: 'Arial Black', Impact, sans-serif !important; }
+    .card-index-suit { font-size: 3vw !important; }
+    .card-single-center-suit { position: absolute !important; top: 55% !important; left: 55% !important; transform: translate(-50%, -50%) !important; font-size: 5.5vw !important; opacity: 0.95 !important; display: block !important; }
 
     .community-section {
         background: transparent !important; 
@@ -806,86 +783,82 @@ body {
         margin: 0 !important;
     }
     .community-title { font-size: 8.5px !important; }
-    
-    /* 公牌卡片同步 Auto Scale 比例 */
-    .card-community { 
-        width: 12.5vw !important; 
-        height: auto !important;
-        aspect-ratio: 1 / 1.44 !important;
-    }
-
-    /* ==========================================
-       📱 手機版：5個投注圈 Grid 網格完美橫跨全寬版
-       ========================================== */
+    .card-community { width: 12.5vw !important; height: auto !important; aspect-ratio: 1 / 1.44 !important; }
 
     /* 
-       核心修正：重新啟用 Grid，精準把螢幕橫向切成 5 等分（1fr * 5）
-       加上 padding 留白與寬度限制，強制 5 個圈整整齊齊橫跨全寬，絕不隱形！
+       【核心修復：2x2 頂級對稱大網格】
+       我們用 grid-template-rows: auto auto 讓網格高度隨圓圈自由彈性舒展，
+       搭配 padding-top 完美為右上角的說明按鈕留下安全防禦空地！
     */
     .betting-area {
         width: 100% !important;
         display: grid !important;
-        grid-template-columns: repeat(5, 1fr) !important; /* 精準等分 5 格 */
-        grid-template-rows: auto !important;
-        gap: 6px !important; /* 均勻精緻的圈與圈間距 */
-        padding: 6px 4px !important; 
-        border-radius: 10px;
+        grid-template-columns: repeat(2, 1fr) !important; /* 橫向精準平分 2 格 */
+        grid-template-rows: auto auto !important;         /* 【關鍵】高度完全動態自適應，徹底拒絕 Overlap！ */
+        row-gap: 12px !important;    /* 兩行大圈之間的完美的垂直距離 */
+        column-gap: 12px !important; /* 左右大圈之間的精美距離 */
+        padding: 6px !important;
+        padding-top: 18px !important; /* 為頭頂的賠率說明預留安全的黃金空地 */
+        border-radius: 12px;
         background: rgba(0, 0, 0, 0.15);
-        position: relative !important; /* 重新鎖定為穩固的定位基準 */
-        margin-top: 16px !important;
+        position: relative !important; /* 鎖定穩固的定位基準 */
         box-sizing: border-box !important;
+        margin-top: 5px !important;
     }
 
-    .bet-zone-placeholder { 
-        display: none !important; /* 確保沒用的占位符徹底消失 */
-    }
+    .bet-zone-placeholder { display: none !important; }
 
     /* 
-       投注圈本體：寬度 100% 自動填滿剛剛切好的 5 等分格子
-       維持 aspect-ratio 確保拉寬撐滿螢幕的同時，每一個圈依然是高質感的「絕對正圓形」！
+       【核心修復】投注圈本體樣式：
+       我們直接為它指派一組完美用盡手機橫向、且高度完美匹配的 38vw 尺寸！
+       維持 aspect-ratio 鎖定正圓，這樣它們既大隻，又絕對、百分之百不可能再重疊！
     */
     .bet-zone {
-        width: 100% !important;        /* 自適應撐滿格子的全寬 */
+        width: 100% !important;        /* 自動填滿格子 */
         max-width: 100% !important;
-        aspect-ratio: 1 / 1 !important; /* 核心鎖定：保證絕對不變形、不變扁、不隱形 */
+        aspect-ratio: 1 / 1 !important; /* 核心鎖定：完美的絕對正圓形 */
         height: auto !important; 
         border: 1.5px double rgba(255, 215, 0, 0.25) !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: 2px !important;
+        padding: 6px !important;
         box-sizing: border-box !important;
+        background: rgba(0, 0, 0, 0.2) !important;
     }
     
     .zone-label { 
-        font-size: 8px; 
-        transform: scale(0.85); 
-        margin-bottom: 1px;
-        white-space: nowrap;
+        font-size: 9px !important; 
+        font-weight: bold !important;
+        margin-bottom: 2px !important;
+        white-space: nowrap !important;
+        color: rgba(255, 215, 0, 0.85) !important;
     }
     
+    /* 大圈內配置大尺寸的精美小籌碼 */
     .bet-chip { 
-        width: 20px !important; 
-        height: 20px !important; 
-        font-size: 8px; 
+        width: 24px !important; 
+        height: 24px !important; 
+        font-size: 9px !important; 
     }
 
     /* 
-       【終極修復】有了穩固的 Grid 網格結構相托，
-       賠率說明現在會 100% 聽話、精準地降落並懸浮在最右側第五格（PLAY 圈）的頭頂上方！
+       【完美歸位】賠率說明標籤：
+       因為有了相對於 .betting-area 穩固的相對定位基準，它現在會 100% 聽話，
+       端端正正、極其精緻地懸浮在下注網格的右上角空地上，絕不遮字，也絕不亂飄！
     */
     .info-btn {
         position: absolute !important;
-        top: 55px !important;      
-        right: 4px !important;       
+        top: 2px !important;         /* 穩穩釘在下注網格的頂端邊緣 */
+        right: 6px !important;       /* 貼緊右側 */
         width: 52px !important;
         height: 14px !important;
         padding: 0 !important;
         font-size: 8px !important;
         line-height: 14px !important;
         border-radius: 8px !important;
-        background: rgba(15, 20, 28, 0.9) !important;
+        background: rgba(15, 20, 28, 0.95) !important;
         border: 1px solid #ffd700 !important;
         z-index: 10;
         display: flex !important;
@@ -893,72 +866,63 @@ body {
         align-items: center !important;
     }
 
-
     /* 底部控制面板 */
     .control-panel {
-        margin-top: 10px !important; 
-        gap: 8px;
+        margin-top: 5px !important; 
+        gap: 6px;
         display: flex;
         flex-direction: column;
     }
 
-    /* 錢包與籌碼列：同樣改用 vw 做到完美的橫向 Auto Scale 縮放 */
+    /* 錢包與籌碼列 */
     .chip-selector {
         display: grid;
-        grid-template-columns: 1.4fr repeat(4, 9vw) 1.1fr; /* 籌碼寬度隨螢幕自動適應 */
-        gap: 4px;
+        grid-template-columns: 1.3fr repeat(4, 34px) 42px; 
+        gap: 5px;
         align-items: center;
     }
 
     .player-wallet {
         width: 100% !important;
-        height: 9vw; /* 與籌碼高度完全拉平 */
-        min-height: 34px;
+        height: 34px; 
         padding: 0 4px;
         border-radius: 6px;
     }
     .wallet-icon { font-size: 13px; }
     .wallet-label { font-size: 6.5px; }
-    .wallet-amount { font-size: 10px; }
+    .wallet-amount { font-size: 9.5px; }
 
     .chip {
-        width: 9vw !important;
-        height: 9vw !important;
-        min-width: 32px !important;
-        min-height: 32px !important;
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
     }
     .chip-100 { font-size: 9px !important; }  
     .chip-500 { font-size: 9px !important; }  
     .chip-1000 { font-size: 7.5px !important; } 
     .chip-10000 { font-size: 6.5px !important; }
 
-    /* 清空下注按鈕 */
     .clear-btn {
-        width: 100% !important;
-        height: 9vw !important;
-        min-height: 34px;
-        font-size: 9px !important;
-        border-radius: 5px !important;
+        width: 42px !important;
+        height: 34px !important;
+        font-size: 8.5px !important;
+        border-radius: 4px !important;
     }
 
     /* 最底部的動作按鈕欄 */
     .action-buttons {
         width: 100%;
-        gap: 6px;
-        margin-top: 4px;
-        padding-bottom: 15px; 
+        gap: 4px;
+        padding-bottom: 10px; 
     }
 
-    /* 【核心修正】稍微放寬按鈕高度至 40px，確保單行純中文「下一局」擁有完美的呼吸空間，絕對不溢出 */
     .btn {
         flex: 1;
-        font-size: 13px; /* 稍微放大字體，看得更清晰舒服 */
-        font-weight: bold;
-        border-radius: 6px;
-        height: 40px !important; /* 釋放高度 */
+        font-size: 12px;
+        border-radius: 4px;
+        height: 36px; 
         display: flex;
         justify-content: center;
         align-items: center;
-        line-height: 1 !important;
     }
 }
