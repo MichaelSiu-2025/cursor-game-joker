@@ -814,41 +814,76 @@ body {
         aspect-ratio: 1 / 1.44 !important;
     }
 
-    /* 1行5列 投注區 */
-    .betting-area {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(5, 1fr); 
-        grid-template-rows: auto; /* 取消固定高度，由正圓形自然撐開 */
-        gap: 5px;
-        padding: 4px;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.1);
-        position: relative;
-        margin-top: 14px !important;
-    }
-    .bet-zone-placeholder { display: none; }
+    /* ==========================================
+       📱 手機版：5個投注圈 Grid 網格完美橫跨全寬版
+       ========================================== */
 
-    /* 投注圈：強制 1:1 完美正圓，同樣隨屏幕寬度自動 Auto Scale */
+    /* 
+       核心修正：重新啟用 Grid，精準把螢幕橫向切成 5 等分（1fr * 5）
+       加上 padding 留白與寬度限制，強制 5 個圈整整齊齊橫跨全寬，絕不隱形！
+    */
+    .betting-area {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important; /* 精準等分 5 格 */
+        grid-template-rows: auto !important;
+        gap: 6px !important; /* 均勻精緻的圈與圈間距 */
+        padding: 6px 4px !important; 
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.15);
+        position: relative !important; /* 重新鎖定為穩固的定位基準 */
+        margin-top: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    .bet-zone-placeholder { 
+        display: none !important; /* 確保沒用的占位符徹底消失 */
+    }
+
+    /* 
+       投注圈本體：寬度 100% 自動填滿剛剛切好的 5 等分格子
+       維持 aspect-ratio 確保拉寬撐滿螢幕的同時，每一個圈依然是高質感的「絕對正圓形」！
+    */
     .bet-zone {
-        width: 100%;
-        aspect-ratio: 1 / 1;
+        width: 100% !important;        /* 自適應撐滿格子的全寬 */
+        max-width: 100% !important;
+        aspect-ratio: 1 / 1 !important; /* 核心鎖定：保證絕對不變形、不變扁、不隱形 */
         height: auto !important; 
         border: 1.5px double rgba(255, 215, 0, 0.25) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 2px !important;
+        box-sizing: border-box !important;
     }
-    .zone-label { font-size: 7.5px; transform: scale(0.85); }
-    .bet-chip { width: 18px; height: 18px; font-size: 7.5px; }
+    
+    .zone-label { 
+        font-size: 8px; 
+        transform: scale(0.85); 
+        margin-bottom: 1px;
+        white-space: nowrap;
+    }
+    
+    .bet-chip { 
+        width: 20px !important; 
+        height: 20px !important; 
+        font-size: 8px; 
+    }
 
-    /* 賠率說明：精準懸浮 */
+    /* 
+       【終極修復】有了穩固的 Grid 網格結構相托，
+       賠率說明現在會 100% 聽話、精準地降落並懸浮在最右側第五格（PLAY 圈）的頭頂上方！
+    */
     .info-btn {
         position: absolute !important;
         top: 55px !important;      
         right: 4px !important;       
         width: 52px !important;
-        height: 13px !important;
+        height: 14px !important;
         padding: 0 !important;
         font-size: 8px !important;
-        line-height: 13px !important;
+        line-height: 14px !important;
         border-radius: 8px !important;
         background: rgba(15, 20, 28, 0.9) !important;
         border: 1px solid #ffd700 !important;
@@ -857,6 +892,7 @@ body {
         justify-content: center !important;
         align-items: center !important;
     }
+
 
     /* 底部控制面板 */
     .control-panel {
