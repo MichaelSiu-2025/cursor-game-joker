@@ -1,0 +1,819 @@
+/* 基礎設定 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 賭檯本體 */
+.casino-table {
+    background: radial-gradient(circle, #0a5c2c 0%, #053318 100%);
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border: 12px solid #4a2711; /* 木質外框 */
+    border-radius: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7), inset 0 0 100px rgba(0,0,0,0.5);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 狀態列 */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,215,0,0.2);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.balance-display {
+    color: #ffd700;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.game-message {
+    color: #fff;
+    font-size: 18px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid #ffd700;
+}
+
+/* 全新左右並排佈局 */
+.main-content-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+/* 左邊牌局回歸乾淨間距 */
+.game-play-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 60px; /* 移除公牌後，拉大莊家同玩家手牌的距離，視覺更大氣 */
+}
+
+.dealer-section, .player-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin: 8px 0;
+    font-weight: bold;
+}
+
+.qualify-info {
+    font-size: 12px;
+    color: #ff6b6b;
+}
+
+/* 啤牌容器與啤牌 */
+.cards-container {
+    display: flex;
+    gap: 15px;
+    min-height: 120px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 啤牌本體 */
+.card {
+    width: 85px;  
+    height: 125px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    display: flex;
+    padding: 6px;
+    font-weight: bold;
+    position: relative;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* 牌背專屬樣式 */
+.card-back {
+    background: radial-gradient(circle, #cc1111 20%, #880000 100%) !important;
+    border: 4px solid white !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* 左上角組合：數字同花色橫排，再次放大大約 20% */
+.card-index-group {
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    gap: 3px;
+    line-height: 1;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 2; /* 確保字體在花色上方 */
+}
+
+.card-index-num {
+    font-size: 32px; /* 再次放大的特大數字 */
+    font-family: 'Arial Black', Impact, sans-serif;
+    letter-spacing: -1px;
+}
+
+.card-index-suit {
+    font-size: 24px; /* 再次放大的特大花色 */
+    margin-top: -2px; /* 微調對齊線 */
+}
+
+/* 中央單一特大花色圖案 */
+.card-single-center-suit {
+    position: absolute;
+    top: 55%; /* 稍微偏中下方，完美避開左上角的特大字 */
+    left: 55%;
+    transform: translate(-50%, -50%);
+    font-size: 42px; /* 極具張力的特大中央花色 */
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+/* 確保 3x2 下注網格在右側維持原樣並對齊 */
+.betting-area {
+    display: grid;
+    grid-template-columns: repeat(2, 95px);
+    grid-template-rows: repeat(3, 95px);
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.bet-zone {
+    width: 95px;
+    height: 95px;
+    border: 3px double rgba(255, 215, 0, 0.4);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* 確保第三行的 Play 和 占位符 能大方好看 */
+.bet-zone-placeholder {
+    width: 95px;
+    height: 95px;
+    visibility: hidden; /* 隱形但佔空間，保持網格完美對齊 */
+}
+
+.bet-zone:hover {
+    border-color: rgba(255, 215, 0, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 邊注區特別視覺效果 */
+#zone-jackpot { border-color: rgba(231, 76, 60, 0.5); }
+#zone-jackpot:hover { border-color: #e74c3c; }
+
+#zone-sixcard { border-color: rgba(155, 89, 182, 0.5); }
+#zone-sixcard:hover { border-color: #9b59b6; }
+
+/* ANTE 圈加強提示，因為係必買 */
+#zone-ante { border-color: rgba(255, 215, 0, 0.8); box-shadow: inset 0 0 10px rgba(255,215,0,0.1); }
+
+.zone-label {
+    color: rgba(255, 215, 0, 0.7);
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+#zone-jackpot .zone-label { color: #ff7675; }
+#zone-sixcard .zone-label { color: #a55eea; }
+
+/* 累進大獎彩池數字 */
+.jackpot-pool {
+    font-size: 9px;
+    color: #fff;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; color: #ffd700; }
+    100% { opacity: 0.6; }
+}
+
+/* 籌碼外觀 */
+.bet-chip {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px dashed rgba(255,255,255,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 11px;
+    transition: all 0.2s;
+}
+
+.bet-chip.has-bet {
+    background: #e67e22;
+    border: 3px dashed #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+#chip-jackpot.has-bet { background: #c0392b; }
+#chip-sixcard.has-bet { background: #8e44ad; }
+#chip-pairplus.has-bet { background: #2980b9; }
+#chip-ante.has-bet { background: #d35400; }
+#chip-play.has-bet { background: #27ae60; }
+
+/* 當有錢投注時的籌碼樣式 */
+.bet-chip.has-bet {
+    background: #e67e22;
+    border: 3px dashed #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+/* 不同區域落注後可以有不同籌碼色（自由選用） */
+#chip-jackpot.has-bet { background: #c0392b; }
+#chip-sixcard.has-bet { background: #8e44ad; }
+#chip-pairplus.has-bet { background: #2980b9; }
+
+/* 控制面板 */
+.control-panel {
+    border-top: 1px solid rgba(255,215,0,0.2);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 籌碼選擇器 */
+.chip-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.chip {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 4px dashed #fff;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.chip:active { transform: scale(0.9); }
+/* 澳門娛樂場官方經典高額籌碼配色 */
+/* ==========================================
+   澳門 VIP 廳風格：白底雙色高端籌碼
+   ========================================== */
+
+/* ==========================================
+   修正版：白底雙色籌碼（解決字體溢出與自適應大小）
+   ========================================== */
+
+/* 所有籌碼的基础共通設定 */
+.chip {
+    width: 52px;              /* 稍微加大 2px 爭取更大留白空間 */
+    height: 52px;
+    border-radius: 50%;
+    background-color: #ffffff !important; 
+    font-family: 'Arial Black', Impact, sans-serif; /* 採用較扎實的粗體 */
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    letter-spacing: -0.5px;   /* 稍微緊湊字距，幫多位數省空間 */
+}
+
+/* 透過動態 font-size 確保不同長度的數字都能完美裝下 */
+.chip-100 { 
+    font-size: 14px;          /* 3位數可以用大字 */
+    color: #1a1a1a !important; 
+    border: 4px dashed #1a1a1a; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 0 0 2px #1a1a1a; 
+}  
+
+.chip-500 { 
+    font-size: 14px;          /* 3位數可以用大字 */
+    color: #8e44ad !important; 
+    border: 4px dashed #8e44ad; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 0 0 2px #8e44ad; 
+}  
+
+.chip-1000 { 
+    font-size: 11px;          /* 4位數微調縮小，確保不貼邊 */
+    color: #f1c40f !important; 
+    border: 4px dashed #f1c40f; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 0 0 2px #f1c40f; 
+} 
+
+.chip-10000 { 
+    font-size: 9px;           /* 5位數萬位碼，縮小至 9px 完美包覆在白色中心 */
+    color: #c0392b !important; 
+    border: 4px dashed #c0392b; 
+    box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3), inset 0 0 0 2px #c0392b; 
+}
+
+/* 當籌碼被選中（Active）時的高亮提示 */
+.chip.active-chip {
+    transform: translateY(-6px) scale(1.05);
+}
+
+.clear-btn {
+    background: #7f8c8d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 遊戲操作按鈕 */
+
+/* 下一局按鈕專屬樣式 */
+.btn-next {
+    background: #3498db;
+    color: white;
+}
+
+/* 微調動作按鈕的間距與寬度，確保四個按鈕不會擠爆或溢出 */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* 縮小按鈕之間的間距 */
+}
+
+.btn {
+    padding: 12px 20px; /* 微調按鈕內邊距 */
+    font-size: 14px;    /* 稍微縮小字體確保完美並排 */
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+}
+
+.btn:disabled {
+    background: #555 !important;
+    color: #888 !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none !important;
+}
+
+.btn-deal { background: #ffd700; color: #000; }
+.btn-fold { background: #e74c3c; color: white; }
+.btn-play { background: #2ecc71; color: white; }
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* 重新微調公牌區在右側時的視覺效果 */
+.community-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 215, 0, 0.04);
+    border: 1px dashed rgba(255, 215, 0, 0.25);
+    border-radius: 15px;
+    padding: 10px;
+    width: 100%; /* 寬度自動填滿右側面板 */
+    box-sizing: border-box;
+    margin: 0; /* 清除舊有負邊距 */
+}
+
+.community-title {
+    color: #ff7675; /* 配合 Jackpot 的紅色主題 */
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* 為了塞進右邊，微調右邊公牌卡片尺寸，讓視覺比例最完美 */
+.card-community {
+    width: 62px !important;  
+    height: 92px !important;
+    border: 2.5px solid #fff;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+}
+
+/* 微調公牌內的特大字體與中央花色，配合縮小後的公牌尺寸 */
+.card-community .card-index-num { font-size: 24px !important; }
+.card-community .card-index-suit { font-size: 18px !important; }
+.card-community .card-single-center-suit { font-size: 32px !important; }
+
+/* 賠率說明按鈕 */
+.info-btn {
+    background: transparent;
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.info-btn:hover {
+    background: rgba(255, 215, 0, 0.15);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* 彈窗遮罩層 (預設隱藏) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px); /* 背景模糊特效 */
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* 當激活彈窗時的 class */
+.modal-overlay.show-modal {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 彈窗主體盒子 */
+.modal-content {
+    background: #1e272e;
+    color: #ffffff;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    border-radius: 20px;
+    border: 2px solid #ffd700;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    animation: modalSlide 0.3s ease-out;
+}
+
+@keyframes modalSlide {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* 彈窗頂部 */
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,215,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    color: #ffd700;
+}
+
+.close-modal-btn {
+    font-size: 28px;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal-btn:hover { color: #ff6b6b; }
+
+/* 彈窗捲動內部 */
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.modal-body h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #ffd700;
+    border-left: 3px solid #ffd700;
+    padding-left: 8px;
+    font-size: 14px;
+}
+
+.modal-body ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.sub-info {
+    font-size: 12px;
+    color: #a5b1c2;
+    margin-bottom: 5px;
+}
+
+/* 賠率表格樣式 */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.info-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.info-table tr:last-child td { border: none; }
+.info-table td:last-child {
+    text-align: right;
+    font-weight: bold;
+    color: #2ecc71; /* 綠色高亮賠率數字 */
+}
+
+/* ==========================================
+   全新左下角籌碼錢包 (Player Wallet UI)
+   ========================================== */
+/* ==========================================
+   精密修正：左下角籌碼錢包與控制列對齊
+   ========================================== */
+
+/* 重新用 Grid 規劃整行，確保所有元件在同一水平線上，絕不掉字或錯位 */
+.chip-selector {
+    display: grid;
+    /* 錢包(135px) + 4粒籌碼(每粒52px) + 中間自動延伸的空性格(1fr) + 兩粒細功能鈕(每粒90px) */
+    grid-template-columns: 135px repeat(4, 52px) 1fr 90px 90px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 錢包盒子主體 */
+.player-wallet {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #1e272e 0%, #0f141c 100%);
+    border: 2px solid #ffd700; 
+    border-radius: 12px;
+    padding: 0 10px;
+    width: 135px; /* 與 Grid 寬度完美鎖死 */
+    height: 52px; /* 與籌碼高度完全等高 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,215,0,0.1);
+    box-sizing: border-box;
+}
+
+/* 錢包圖標 */
+.wallet-icon {
+    font-size: 22px;
+    margin-right: 6px;
+}
+
+/* 錢包文字 */
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.wallet-label {
+    color: rgba(255, 215, 0, 0.6);
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.wallet-amount {
+    color: #ffd700; 
+    font-size: 14px;
+    font-family: 'Arial Black', Impact, sans-serif;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+/* 清空與說明按鈕：變細隻與精緻化 */
+.clear-btn, .info-btn {
+    width: 90px;      /* 鎖定較窄的固定寬度，讓按鈕變細 */
+    height: 42px;     /* 稍微縮減高度，看起來更精煉，不臃腫 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px !important; /* 稍微縮小字體配合按鈕大小 */
+    padding: 0 5px;
+    white-space: nowrap; 
+    box-sizing: border-box;
+    border-radius: 6px; /* 稍微圓角修邊 */
+}
+
+/* 為了讓 Grid 的 1fr 空格格子能順暢隱形過渡，補一個防禦性樣式 */
+.chip-selector::after {
+    content: "";
+    /* 這裡什麼都不用寫，它會自動作為 1fr 的格網元素，將按鈕推去最右邊 */
+}
+
+/* ==========================================
+   📱 手機/直屏專屬：完美自適應排版 (@media)
+   ========================================== */
+@media (max-width: 600px) {
+    /* 1. 調整賭檯外框與內邊距，騰出更多手機空間 */
+    body {
+        padding: 5px;
+    }
+    
+    .casino-table {
+        border-width: 6px; /* 縮細木質外框 */
+        border-radius: 20px;
+        padding: 12px;
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    /* 2. 核心大變身：將左右並排 (Flex-row) 變成 上下垂直並排 (Flex-column) */
+    .main-content-layout {
+        flex-direction: column;
+        gap: 15px;
+        margin: 10px 0;
+    }
+
+    /* 3. 牌局區域：縮小牌與牌的距離 */
+    .game-play-area {
+        width: 100%;
+        gap: 12px;
+    }
+
+    /* 4. 啤牌尺寸等比例縮小：確保在細手機屏幕也不會擠爆 */
+    .card {
+        width: 68px !important;
+        height: 98px !important;
+        padding: 5px;
+    }
+    
+    /* 再次微調啤牌大字體的字號，保持精緻 */
+    .card-index-num { font-size: 24px !important; }
+    .card-index-suit { font-size: 18px !important; }
+    .card-single-center-suit { font-size: 32px !important; }
+
+    /* 5. 右側控制面板搬到中間：寬度自適應填滿 */
+    .right-side-panel {
+        width: 100%;
+        flex-direction: row; /* 讓公牌與投注網格在手機上左右並排 */
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* 6. 手機版公牌盒：直立擺放，節省橫向寬度 */
+    .community-section {
+        flex: 1;
+        padding: 6px;
+    }
+    .community-section .cards-container {
+        flex-direction: column; /* 讓 2 張公牌上下排 */
+        gap: 8px;
+        min-height: auto;
+    }
+    .card-community {
+        width: 58px !important;
+        height: 84px !important;
+    }
+
+    /* 7. 手機版 3x2 投注區：微調格子大小 */
+    .betting-area {
+        flex: 1.2;
+        grid-template-columns: repeat(2, 1fr); /* 均分剩餘寬度 */
+        grid-template-rows: repeat(3, 72px);    /* 縮矮高度，留空間給下方按鈕 */
+        gap: 8px;
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    .bet-zone {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .zone-label {
+        font-size: 9px;
+    }
+
+    .bet-chip {
+        width: 32px;
+        height: 32px;
+        font-size: 10px;
+    }
+
+    /* 8. 底部控制列：全面改為適合單手操作的大格子 */
+    .control-panel {
+        padding-top: 10px;
+        gap: 10px;
+    }
+
+    .chip-selector {
+        grid-template-columns: 1fr repeat(4, 46px) 1fr; /* 隱藏右側說明鈕，重新排版 */
+        grid-template-rows: auto;
+        gap: 6px;
+    }
+
+    /* 讓錢包和籌碼等高 */
+    .player-wallet {
+        width: 100% !important;
+        height: 46px;
+        padding: 0 6px;
+    }
+    .wallet-icon { font-size: 18px; }
+    .wallet-amount { font-size: 12px; }
+
+    .chip {
+        width: 46px;
+        height: 46px;
+    }
+
+    /* 讓 清空下注 同 賠率說明 搬去最下方，變成兩粒大按鈕方便大拇指按 */
+    .clear-btn, .info-btn {
+        grid-column: span 3; /* 各佔一半寬度 */
+        height: 38px;
+        width: 100%;
+    }
+
+    /* 動作按鈕大合集 (發牌、加注、下一局) */
+    .action-buttons {
+        width: 100%;
+        gap: 8px;
+    }
+
+    .btn {
+        flex: 1; /* 平分屏幕寬度 */
+        padding: 10px 0;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+    
+    /* 頂部戰報：微調字體大小 */
+    .game-message {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}

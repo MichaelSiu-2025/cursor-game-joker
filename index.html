@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=no">
+    <title>富貴三寶 - Fortune 3 Card Poker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="casino-table">
+        <!-- 頂部資訊列 -->
+        <!-- 頂部資訊列 (已移走總資產，給予訊息全寬空間) -->
+        <div class="status-bar">
+            <div id="game-message" class="game-message" style="width: 100%; text-align: center;">請放入本注（Ante）開始遊戲</div>
+        </div>
+
+        <!-- 主要遊戲核心區（分為左邊牌局、右邊投注） -->
+                <!-- 主要遊戲核心區（左邊純牌局、右邊公牌與投注） -->
+        <div class="main-content-layout">
+            
+            <!-- 左邊：牌局區域 (已移除中央公牌，釋放垂直空間) -->
+            <div class="game-play-area">
+                <!-- 莊家區 -->
+                <div class="dealer-section">
+                    <div class="section-title">莊家 (DEALER) <span class="qualify-info">(Q 或以上成局)</span></div>
+                    <div class="cards-container" id="dealer-cards">
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                    </div>
+                </div>
+
+                <!-- 玩家區 -->
+                <div class="player-section">
+                    <div class="cards-container" id="player-cards">
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                    </div>
+                    <div class="section-title">玩家 (PLAYER)</div>
+                </div>
+            </div>
+
+            <!-- 右邊：全新整合面板 (公牌在上方 + 下注區在下方) -->
+            <div class="right-side-panel">
+                
+                <!-- 【已搬遷到此】累進大獎公牌區 -->
+                <div class="community-section">
+                    <div class="community-title">JACKPOT 公牌 (COMMUNITY CARDS)</div>
+                    <div class="cards-container" id="community-cards">
+                        <div class="card card-back card-community"></div>
+                        <div class="card card-back card-community"></div>
+                    </div>
+                </div>
+
+                <!-- 右下：投注區 (3行2列) -->
+                <div class="betting-area">
+                    <!-- 第一行 -->
+                    <div class="bet-zone side-bet" id="zone-jackpot">
+                        <div class="zone-label">JACKPOT<br><span class="jackpot-pool">$6,225,485</span></div>
+                        <div class="bet-chip" id="chip-jackpot">0</div>
+                    </div>
+                    <div class="bet-zone side-bet" id="zone-sixcard">
+                        <div class="zone-label">6-CARD<br>BONUS</div>
+                        <div class="bet-chip" id="chip-sixcard">0</div>
+                    </div>
+
+                    <!-- 第二行 -->
+                    <div class="bet-zone active-zone" id="zone-ante">
+                        <div class="zone-label">ANTE</div>
+                        <div class="bet-chip" id="chip-ante">0</div>
+                    </div>
+                    <div class="bet-zone" id="zone-pairplus">
+                        <div class="zone-label">PAIR PLUS</div>
+                        <div class="bet-chip" id="chip-pairplus">0</div>
+                    </div>
+
+                    <!-- 第三行 -->
+                    <div class="bet-zone" id="zone-play">
+                        <div class="zone-label">PLAY</div>
+                        <div class="bet-chip" id="chip-play">0</div>
+                    </div>
+                    <!-- 隱形占位符 -->
+                    <div class="bet-zone-placeholder"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 控制面板 (籌碼選擇 & 遊戲按鈕) -->
+        <div class="control-panel">
+            <!-- 籌碼選擇 (更新為澳門官方高額配色面額) -->
+            <!-- 全新格子化籌碼與錢包控制區 -->
+            <div class="chip-selector">
+                <!-- 1. 左下角籌碼錢包 -->
+                <div class="player-wallet">
+                    <span class="wallet-icon">💰</span>
+                    <div class="wallet-info">
+                        <span class="wallet-label">WALLET</span>
+                        <span class="wallet-amount">$<span id="total-balance">5000</span></span>
+                    </div>
+                </div>
+
+                <!-- 2. 四粒籌碼 -->
+                <button class="chip chip-100 active-chip" onclick="selectChip(100)">100</button>
+                <button class="chip chip-500" onclick="selectChip(500)">500</button>
+                <button class="chip chip-1000" onclick="selectChip(1000)">1000</button>
+                <button class="chip chip-10000" onclick="selectChip(10000)">10000</button>
+                
+                <!-- 3. 功能按鈕 -->
+                <button class="clear-btn" id="btn-clear">清空下注</button>
+                <button class="info-btn" id="btn-info">賠率說明</button>
+            </div>
+
+            <!-- 動作按鈕 (新增下一局按鈕) -->
+            <div class="action-buttons">
+                <button id="btn-deal" class="btn btn-deal">發牌 (Deal)</button>
+                <button id="btn-fold" class="btn btn-fold" disabled>棄牌 (Fold)</button>
+                <button id="btn-play" class="btn btn-play" disabled>加注 (Play)</button>
+                <button id="btn-next" class="btn btn-next" disabled>下一局 (Next)</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- 【全新加入】賠率規則說明彈窗遮罩層 -->
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>富貴三寶 官方賠率與規則說明</h2>
+                <span class="close-modal-btn" id="btn-close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h3>♣️ 遊戲勝負基本規則</h3>
+                <ul>
+                    <li><strong>莊家成局條件：</strong> 莊家手牌必須達到 <strong>Q 散牌或以上</strong>才算成局。</li>
+                    <li><strong>莊家不成局：</strong> 無論玩家手牌大小，本注 (Ante) 贏 1 賠 1，加注 (Play) 退回走牌。</li>
+                    <li><strong>莊家成局：</strong> 雙方比牌面大小，勝者獲得 1 賠 1 派彩，平手則走牌。</li>
+                </ul>
+
+                <h3>🎖️ 本注額外獎賞 (Ante Bonus)</h3>
+                <p class="sub-info">※ 只要手牌擊中以下牌型並點擊加注，不論莊家是否成局或勝負，皆可無條件獲得：</p>
+                <table class="info-table">
+                    <tr><td>同花順</td><td>1 賠 5</td></tr>
+                    <tr><td>三條</td><td>1 賠 4</td></tr>
+                    <tr><td>順子</td><td>1 賠 1</td></tr>
+                </table>
+
+                <h3>🔵 對子或以上獎賞 (Pair Plus)</h3>
+                <table class="info-table">
+                    <tr><td>同花順</td><td>1 賠 40</td></tr>
+                    <tr><td>三條</td><td>1 賠 30</td></tr>
+                    <tr><td>順子</td><td>1 賠 6</td></tr>
+                    <tr><td>同花</td><td>1 賠 4</td></tr>
+                    <tr><td>對子</td><td>1 賠 1</td></tr>
+                </table>
+
+                <h3>🟣 六張牌獎金 (6-Card Bonus)</h3>
+                <p class="sub-info">※ 結合玩家 3 張 + 莊家 3 張共 6 張牌，挑選最佳 5 張組成的德州撲克牌型：</p>
+                <table class="info-table">
+                    <tr><td>黃袍麒 (皇家同花順)</td><td>1 賠 500</td></tr>
+                    <tr><td>同花順</td><td>1 賠 100</td></tr>
+                    <tr><td>四條</td><td>1 賠 50</td></tr>
+                    <tr><td>夫盧 (葫蘆)</td><td>1 賠 20</td></tr>
+                    <tr><td>同花</td><td>1 賠 15</td></tr>
+                    <tr><td>順子</td><td>1 賠 10</td></tr>
+                    <tr><td>三條</td><td>1 賠 7</td></tr>
+                </table>
+
+                <h3>🔴 累進大獎 (Jackpot)</h3>
+                <p class="sub-info">※ 玩家 3 張 + 2 張公牌共 5 張牌組成的最佳牌型：</p>
+                <table class="info-table">
+                    <tr><td>皇家同花順 (Royal Flush)</td><td>贏取 100% 總彩池</td></tr>
+                    <tr><td>同花順</td><td>贏取 10% 總彩池</td></tr>
+                    <tr><td>四條</td><td>固定派發 $5000</td></tr>
+                    <tr><td>夫盧 (葫蘆)</td><td>固定派發 $3000</td></tr>
+                    <tr><td>同花</td><td>固定派發 $2000</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
