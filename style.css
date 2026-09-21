@@ -686,62 +686,63 @@ body {
 /* ==========================================
    📱 iPhone 實機完美優化：dvh 動態高度（100% 裝入免滾動）
    ========================================== */
+/* ==========================================
+   📱 iOS Safari 實機神級優化：動態縮緊（100% 安全收錄所有按鈕）
+   ========================================== */
 @media (max-width: 600px) {
-    /* 徹底鎖定 iOS 的屏幕，禁止任何拉上拉落的多餘晃動 */
+    /* 核心修正：允許網頁在極小高度的手機上可以微幅上下捲動，作為最後的安全防線，絕不鎖死 */
     html, body {
-        height: 100dvh !important;    /* 採用先進 dvh，完美扣除 iPhone 導航底欄 */
-        max-height: 100dvh !important;
-        overflow: hidden !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important; /* 開啟安全微滾動，防止按鈕被硬生生切斷 */
+        overflow-x: hidden !important;
         padding: 0;
         margin: 0;
         background-color: #1a1a1a;
     }
 
     body {
-        padding: 4px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        padding: 6px 4px;
+        display: block; /* 改回塊級排版，讓內容自然向下延伸 */
         box-sizing: border-box;
     }
     
-    /* 賭檯本體：精準鎖定在 iPhone 可見屏幕內 */
+    /* 賭檯本體：取消硬性的 100dvh 全屏限制，改為由內容撐開，高度靈活 */
     .casino-table {
         border-width: 4px;
         border-radius: 12px;
-        padding: 6px; 
+        padding: 8px; 
         max-width: 100%;
         width: 100%;
-        height: calc(100dvh - 8px) !important; /* 動態高度完美契合 */
+        height: auto !important; /* 核心修正：讓高度自由，不再強行拉大中間空隙 */
+        min-height: calc(100vh - 12px); /* 至少撐滿可見視窗 */
         display: flex;
         flex-direction: column;
-        justify-content: space-between; /* 均勻拉開頂、中、底三大區塊 */
-        gap: 2px;
+        justify-content: flex-start; /* 核心修正：由上至下靠緊排列，拒絕 space-between 拉開大空位 */
+        gap: 6px;
         box-sizing: border-box;
     }
 
-    /* 頂部訊息欄 */
+    /* 頂部訊息欄：緊湊字體 */
     .game-message {
         font-size: 11px;
-        padding: 3px 6px;
+        padding: 4px 6px;
         border-radius: 8px;
         margin-bottom: 2px;
     }
 
-    /* 主要核心區：壓縮垂直空間，為底部按鈕騰出大量安全像素 */
+    /* 主要核心區：改為自然緊湊流 */
     .main-content-layout {
         flex-direction: column;
-        gap: 0px;
+        gap: 6px;
         margin: 2px 0;
-        flex: 1;
         display: flex;
-        justify-content: space-between; 
     }
 
     /* 左邊普通牌局區 */
     .game-play-area {
         width: 100%;
-        gap: 4px !important; /* 壓縮莊家與玩家之間的空隙 */
+        gap: 8px !important; /* 嚴格限制莊家與玩家牌之間的空隙，拒絕大空位 */
     }
 
     /* 莊家與公牌水平合體列 */
@@ -758,7 +759,7 @@ body {
         margin: 1px 0;
     }
 
-    /* 啤牌尺寸：為適應 iPhone 導航欄，寬度微調至 48px，高度 67px，維持 1:1.4 黃金比例 */
+    /* 啤牌尺寸：微調至最完美的 48px * 67px 黃金比例 */
     .card {
         width: 48px !important;
         height: 67px !important; 
@@ -780,21 +781,22 @@ body {
     .community-title { font-size: 8px !important; }
     .card-community { width: 48px !important; height: 67px !important; }
 
-    /* 核心變革：5個投注圈，高度大幅縮減至 50px，確保不頂開下方按鈕 */
+    /* 5個投注圈，高度維持在最緊湊的 50px */
     .betting-area {
         width: 100%;
         display: grid;
         grid-template-columns: repeat(5, 1fr); 
-        grid-template-rows: 50px; /* 縮矮 */
+        grid-template-rows: 50px; 
         gap: 4px;
         padding: 2px;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.1);
         position: relative;
+        margin-top: 14px !important; /* 為頭頂的賠率說明預留空間 */
     }
     .bet-zone-placeholder { display: none; }
 
-    /* 投注圈強制正圓形，永不變形 */
+    /* 投注圈強制正圓形 */
     .bet-zone {
         width: 100%;
         aspect-ratio: 1 / 1;
@@ -804,7 +806,7 @@ body {
     .zone-label { font-size: 7.5px; transform: scale(0.8); }
     .bet-chip { width: 18px; height: 18px; font-size: 7.5px; }
 
-    /* 【賠率說明】精緻懸浮在 PLAY 圈最上方边缘，絕不遮字，且絕對跟隨網格 */
+    /* 【賠率說明】精緻懸浮在 PLAY 圈最上方邊緣，絕不走位 */
     .info-btn {
         position: absolute !important;
         top: 55px !important;      
@@ -823,15 +825,17 @@ body {
         align-items: center !important;
     }
 
-    /* 底部控制面板 */
+    /* 【全新加入：動態調節空格彈簧】 */
+    /* 在主要遊戲區和底部控制面板中間，塞入一個自動伸縮的空間，在細屏幕上它會自動變小，避免頂開按鈕 */
     .control-panel {
-        padding-top: 2px;
+        margin-top: auto !important; /* 關鍵：強制將整個控制台貼緊在最底端 */
+        padding-top: 4px;
         gap: 4px;
         display: flex;
         flex-direction: column;
     }
 
-    /* 錢包與籌碼列：固定為 34px 精緻小巧尺寸 */
+    /* 錢包與籌碼列：34px 精緻尺寸 */
     .chip-selector {
         display: grid;
         grid-template-columns: 1.3fr repeat(4, 34px) 42px; 
@@ -866,22 +870,24 @@ body {
         border-radius: 4px !important;
     }
 
-    /* 最底部的動作按鈕欄：百分之百強制浮出在 iPhone 底欄上方！ */
+    /* 最底部的動作按鈕欄：緊湊精緻 */
     .action-buttons {
         width: 100%;
         gap: 4px;
+        margin-top: 2px;
     }
 
     .btn {
         flex: 1;
-        padding: 8px 0 !important; 
+        padding: 0 !important; 
         font-size: 11px;
         border-radius: 4px;
-        height: 34px;
+        height: 34px; /* 固定的精巧高度，確保不擠壓 */
         display: flex;
         justify-content: center;
         align-items: center;
     }
 }
+
 
 
