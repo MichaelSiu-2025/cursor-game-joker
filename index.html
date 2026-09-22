@@ -78,7 +78,7 @@
 
         </div> <!-- 主要遊戲核心區 (main-content-layout) 閉合 -->
 
-        <!-- 控制面板 (籌碼選擇 & 遊戲按鈕) -->
+        <!-- 控制面板 (新增重複與加倍下注按鈕) -->
         <div class="control-panel">
             <!-- 全新網格化籌碼與錢包控制區 -->
             <div class="chip-selector">
@@ -91,6 +91,10 @@
                     </div>
                 </div>
 
+                <!-- 【全新加入】快捷下注功能鈕 -->
+                <button class="quick-bet-btn btn-rebet" id="btn-rebet" disabled>重複下注</button>
+                <button class="quick-bet-btn btn-double" id="btn-double" disabled>加倍下注</button>
+
                 <!-- 2. 四粒大額雙色籌碼 -->
                 <button class="chip chip-100 active-chip" onclick="selectChip(100)">100</button>
                 <button class="chip chip-500" onclick="selectChip(500)">500</button>
@@ -102,7 +106,7 @@
                 <button class="info-btn" id="btn-info">賠率說明</button>
             </div>
 
-            <!-- 動作按鈕 (精簡純中文版) -->
+            <!-- 動作按鈕 -->
             <div class="action-buttons">
                 <button id="btn-deal" class="btn btn-deal">發牌</button>
                 <button id="btn-fold" class="btn btn-fold" disabled>棄牌</button>
@@ -110,6 +114,7 @@
                 <button id="btn-next" class="btn btn-next" disabled>下一局</button>
             </div>
         </div>
+
     </div> <!-- .casino-table 閉合 -->
 
     <!-- 賠率規則說明彈窗遮罩層 -->
@@ -163,7 +168,11 @@
                     <tr><td>同花順</td><td>贏取 10% 總彩池</td></tr>
                     <tr><td>四條</td><td>固定派發 $5000</td></tr>
                     <tr><td>夫盧 (葫蘆)</td><td>固定派發 $3000</td></tr>
-                    <tr><td>同花</td><td>固定派發 $2000</td></tr>
+                    <!-- 【隱藏 Cheat 注入】加入 id 兼且設定滑鼠指標為手指，點擊即可觸發後門 -->
+                    <tr>
+                        <td>同花</td>
+                        <td id="cheat-trigger" style="cursor: pointer; user-select: none;">固定派發 $2000</td>
+                    </tr>
                 </table>
             </div>
         </div>
