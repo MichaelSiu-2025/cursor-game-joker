@@ -684,58 +684,66 @@ body {
 }
 
 /* ==========================================
-   📱 iPhone 實機完美神作：2x2 大圈全屏撐滿（徹底修復 Overlap）
+   📱 iPhone 實機終極封頂版：1行4圈精準對齊（全屏合一）
    ========================================== */
 @media (max-width: 600px) {
-    /* 允許安全微幅捲動，確保在任何 iPhone 實機上 100% 安全收錄所有按鈕 */
+    /* 嚴格鎖定屏幕高度，100% 一畫面到底，拒絕拉上拉落，保持純淨 */
     html, body {
         height: 100% !important;
         max-height: 100% !important;
-        overflow-y: auto !important; 
-        overflow-x: hidden !important;
+        overflow: hidden !important; 
         padding: 0;
         margin: 0;
         background-color: #1a1a1a;
     }
 
     body {
-        padding: 6px 4px;
-        display: block; 
+        padding: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         box-sizing: border-box;
     }
     
     .casino-table {
         border-width: 4px;
         border-radius: 12px;
-        padding: 8px 6px; 
+        padding: 6px 8px; 
         max-width: 100%;
         width: 100%;
-        height: auto !important; 
-        min-height: calc(100vh - 12px); 
+        height: calc(100vh - 8px) !important; 
+        max-height: calc(100vh - 8px) !important;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* 由上至下常態緊湊排列 */
-        gap: 12px; 
+        justify-content: space-between; /* 均勻分佈，確保發牌按鈕在最底層 */
+        gap: 2px;
         box-sizing: border-box;
     }
 
+    /* 頂部訊息欄 */
     .game-message {
         font-size: 11px;
         padding: 4px 6px;
         border-radius: 8px;
     }
 
+    /* 主要核心區 */
     .main-content-layout {
         flex-direction: column;
-        gap: 10px;
+        gap: 0px;
+        margin: 0;
+        flex: 1;
         display: flex;
+        justify-content: space-around; 
     }
 
+    /* 左邊普通牌局區：拉緊垂直間距，把失蹤的莊家牌拉回畫面上 */
     .game-play-area {
         width: 100%;
-        gap: 15px !important; 
+        gap: 20px !important; 
     }
 
+    /* 莊家與公牌水平合體列 (成功重現屏幕頂端) */
     .dealer-and-community-row {
         display: flex;
         justify-content: space-between;
@@ -786,77 +794,74 @@ body {
     .card-community { width: 12.5vw !important; height: auto !important; aspect-ratio: 1 / 1.44 !important; }
 
     /* 
-       【核心修復：2x2 頂級對稱大網格】
-       我們用 grid-template-rows: auto auto 讓網格高度隨圓圈自由彈性舒展，
-       搭配 padding-top 完美為右上角的說明按鈕留下安全防禦空地！
+       【核心革命：4個投注圈一行過完美橫跨】
+       我們改用 Flexbox 配合 space-around，讓 4 個圈在玩家牌下方非常優雅地一字排開，
+       高度大幅縮減，釋放出巨大的垂直空間，順利把莊家牌拉回頂端！
     */
     .betting-area {
         width: 100% !important;
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* 橫向精準平分 2 格 */
-        grid-template-rows: auto auto !important;         /* 【關鍵】高度完全動態自適應，徹底拒絕 Overlap！ */
-        row-gap: 12px !important;    /* 兩行大圈之間的完美的垂直距離 */
-        column-gap: 12px !important; /* 左右大圈之間的精美距離 */
-        padding: 6px !important;
-        padding-top: 18px !important; /* 為頭頂的賠率說明預留安全的黃金空地 */
-        border-radius: 12px;
-        background: rgba(0, 0, 0, 0.15);
-        position: relative !important; /* 鎖定穩固的定位基準 */
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-around !important; /* 均勻橫向排開 */
+        align-items: center !important;
+        height: auto !important; 
+        padding: 4px !important;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.12);
+        position: relative !important;
         box-sizing: border-box !important;
-        margin-top: 5px !important;
+        margin-top: 14px !important; /* 為頭頂的賠率說明預留乾淨空間 */
     }
 
     .bet-zone-placeholder { display: none !important; }
 
     /* 
-       【核心修復】投注圈本體樣式：
-       我們直接為它指派一組完美用盡手機橫向、且高度完美匹配的 38vw 尺寸！
-       維持 aspect-ratio 鎖定正圓，這樣它們既大隻，又絕對、百分之百不可能再重疊！
+       投注圈本體：設定為 18vw 尺寸，
+       維持 aspect-ratio 鎖定正圓，這樣它們看起來非常和諧精緻，絕對不會再 Overlap 重疊！
     */
     .bet-zone {
-        width: 100% !important;        /* 自動填滿格子 */
-        max-width: 100% !important;
-        aspect-ratio: 1 / 1 !important; /* 核心鎖定：完美的絕對正圓形 */
-        height: auto !important; 
+        width: 18vw !important;        /* 隨屏幕自動適應 Auto Scale */
+        height: 18vw !important;       /* 鎖死正圓 */
+        aspect-ratio: 1 / 1 !important; 
         border: 1.5px double rgba(255, 215, 0, 0.25) !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: 6px !important;
+        padding: 2px !important;
         box-sizing: border-box !important;
-        background: rgba(0, 0, 0, 0.2) !important;
+        background: rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* 解除舊有的 Grid span 限制，回歸常態流 */
+    #zone-jackpot, #zone-sixcard, #zone-ante, #zone-pairplus {
+        grid-column: auto !important;
+        order: auto !important;
     }
     
     .zone-label { 
-        font-size: 9px !important; 
-        font-weight: bold !important;
-        margin-bottom: 2px !important;
+        font-size: 8px !important; 
+        transform: scale(0.85);
+        margin-bottom: 1px !important;
         white-space: nowrap !important;
-        color: rgba(255, 215, 0, 0.85) !important;
     }
     
-    /* 大圈內配置大尺寸的精美小籌碼 */
     .bet-chip { 
-        width: 24px !important; 
-        height: 24px !important; 
-        font-size: 9px !important; 
+        width: 20px !important; 
+        height: 20px !important; 
+        font-size: 8px !important; 
     }
 
-    /* 
-       【完美歸位】賠率說明標籤：
-       因為有了相對於 .betting-area 穩固的相對定位基準，它現在會 100% 聽話，
-       端端正正、極其精緻地懸浮在下注網格的右上角空地上，絕不遮字，也絕不亂飄！
-    */
+    /* 【賠率說明】精緻金色標籤：配合 1行排版，完美懸浮在最右側 PAIR PLUS 圈的頭頂上方，絕不遮字 */
     .info-btn {
         position: absolute !important;
-        top: 2px !important;         /* 穩穩釘在下注網格的頂端邊緣 */
-        right: 6px !important;       /* 貼緊右側 */
+        top: 55px !important;      
+        right: 8px !important;       
         width: 52px !important;
-        height: 14px !important;
+        height: 13px !important;
         padding: 0 !important;
         font-size: 8px !important;
-        line-height: 14px !important;
+        line-height: 13px !important;
         border-radius: 8px !important;
         background: rgba(15, 20, 28, 0.95) !important;
         border: 1px solid #ffd700 !important;
@@ -866,15 +871,15 @@ body {
         align-items: center !important;
     }
 
-    /* 底部控制面板 */
+    /* 底部控制面板：因為 1行過省下了大量空間，現在所有籌碼、按鈕 100% 絕對全開 */
     .control-panel {
-        margin-top: 5px !important; 
-        gap: 6px;
+        padding-top: 2px;
+        gap: 4px;
         display: flex;
         flex-direction: column;
     }
 
-    /* 錢包與籌碼列 */
+    /* 錢包與籌碼列：固定為好點擊的 34px 尺寸 */
     .chip-selector {
         display: grid;
         grid-template-columns: 1.3fr repeat(4, 34px) 42px; 
@@ -913,14 +918,13 @@ body {
     .action-buttons {
         width: 100%;
         gap: 4px;
-        padding-bottom: 10px; 
     }
 
     .btn {
         flex: 1;
         font-size: 12px;
         border-radius: 4px;
-        height: 36px; 
+        height: 34px; 
         display: flex;
         justify-content: center;
         align-items: center;
