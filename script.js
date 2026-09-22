@@ -3,7 +3,7 @@
 // ==========================================
 let totalBalance = 50000;        // 玩家初始總資產變成 $5000
 let selectedChipValue = 100;     // 預設選中的籌碼面額改為 $100
-let jackpotPoolAmount = 25480;  // <-- 全新加入：用來動態紀錄累進彩池的真實金額
+let jackpotPoolAmount = 6225485;  // <-- 全新加入：用來動態紀錄累進彩池的真實金額
 
 // 記錄 5 個投注區的目前下注金額
 let bets = {
@@ -20,14 +20,19 @@ let gameState = 'betting';
 // ==========================================
 // 1.5 全新加入：線上賭場專用高質感音效物件
 // ==========================================
-// 籌碼落注聲效 (經典的籌碼撞擊、推碼聲)
-const soundChip = new Audio('https://mixkit.co'); 
-// 啤牌翻牌聲效 (清脆的紙牌摩擦、翻牌聲)
-const soundCard = new Audio('https://google.com');
+// 直接讀取你剛剛放在同一個資料夾內的本地 MP3 檔案
+const soundChip = new Audio('chip.mp3'); 
+const soundCard = new Audio('card.mp3');
+const soundWinning = new Audio('winning.mp3'); // <-- 【全新加入】贏錢慶典音效
+const soundLosing = new Audio('losing.mp3'); // <-- 【全新加入】輸錢沮喪音效
+const soundDraw = new Audio('draw.mp3'); // <-- 【全新加入】和局走牌音效
 
 // 設置防禦：微調音量，確保聲音清脆而不刺耳
-soundChip.volume = 0.6;
+soundChip.volume = 0.2;
 soundCard.volume = 0.5;
+soundWinning.volume = 0.3; // 贏錢要夠響亮、夠大聲！
+soundLosing.volume = 0.2; // 輸錢音量適中即可，增加氛圍感
+soundDraw.volume = 0.4; // 和局音量適中
 
 /**
  * 瀏覽器安全解鎖大師 (專治 iOS Safari 預設靜音限制)
@@ -36,7 +41,9 @@ function unlockAudio() {
     // 透過玩家點擊網頁的一瞬間，在背景播放一次無聲的音訊，強行向 iPhone 爭取聲音權限
     soundChip.play().then(() => { soundChip.pause(); soundChip.currentTime = 0; }).catch(() => {});
     soundCard.play().then(() => { soundCard.pause(); soundCard.currentTime = 0; }).catch(() => {});
-    
+    soundWinning.play().then(() => { soundWinning.pause(); soundWinning.currentTime = 0; }).catch(() => {});
+    soundLosing.play().then(() => { soundLosing.pause(); soundLosing.currentTime = 0; }).catch(() => {});
+    soundDraw.play().then(() => { soundDraw.pause(); soundDraw.currentTime = 0; }).catch(() => {})
     // 解鎖一次後，立刻自我銷毀這個監聽器，絕不浪費手機 CPU 效能
     document.removeEventListener('click', unlockAudio);
 }
@@ -324,9 +331,9 @@ function renderCard(card, container, isFaceUp = true) {
     if (isFaceUp) {
         setTimeout(() => {
             cardEl.classList.add('flipped');
-
-            // 【音效注入】當卡牌真正執行 3D 轉身翻牌的一瞬間，同步響起清脆的撲克翻牌聲！
-            soundCard.currentTime = 0;
+            
+            // 【神級優化】重置並強制跳過開頭的 0.15 秒空白，直接從有聲音的地方爆發出來！
+            soundCard.currentTime = 0.15; // ※ 如果玩起來覺得還有一點點 delay，可以嘗試加大到 0.2 或 0.25
             soundCard.play().catch(() => {});
         }, 50);
     }
@@ -646,6 +653,9 @@ function fold() {
     revealDealerCards();
     zeroAllBets();
     updateUI();
+    // 【全新音效注入】棄牌認輸時，同步響起輸錢沮喪音效
+    soundLosing.currentTime = 0;
+    soundLosing.play().catch(() => {});
     resetControlButtons();
 }
 
@@ -732,10 +742,22 @@ function play() {
 
     if (netProfit > 0) {
         summaryMessage += ` ✨ 🎉【本局淨贏得: $${netProfit}】🎉`;
+
+        // 【全新音效注入】精確判定這局扣除所有成本後有賺錢，立刻引爆贏錢慶典音樂！
+        soundWinning.currentTime = 0; // 重置時間軸，做到 0 延時
+        soundWinning.play().catch(() => {});
     } else if (netProfit < 0) {
         summaryMessage += ` ❌【本局淨輸掉: $${Math.abs(netProfit)}】`;
+
+        // 【全新音效注入】精確判定這局扣除主注邊注後整體虧損，立刻響起輸錢沮喪音效！
+        soundLosing.currentTime = 0; // 重置時間軸，做到 0 延時
+        soundLosing.play().catch(() => {});
     } else {
         summaryMessage += ` 🤝【本局完全平手，無輸無贏】`;
+
+        // 【全新音效注入】精確判定這局最終結算完全平手（走牌），立刻響起和局音效！
+        soundDraw.currentTime = 0; // 重置時間軸，做到 0 延時
+        soundDraw.play().catch(() => {});
     }
 
     updateMessage(summaryMessage);
@@ -814,13 +836,13 @@ function revealDealerCards() {
         cardElements.push(el);
     });
     
-    // 每隔 200 毫秒，依次為這三張牌加上 .flipped，觸發 3D 轉身動畫！
+    // 每隔 200 毫秒，依次為這三張牌加上 .flipped
     cardElements.forEach((el, index) => {
         setTimeout(() => {
             el.classList.add('flipped');
-
-            // 【音效注入】莊家三張牌「啪、啪、啪」依次掀開時，同步一聲接一聲響起翻牌聲！
-            soundCard.currentTime = 0;
+            
+            // 【神級優化】莊家依次掀牌時，同樣強制跳過前奏空白，做到 100% 視覺與聽覺同步！
+            soundCard.currentTime = 0.15; // ※ 這裡的秒數要與上面 renderCard 保持完全一致
             soundCard.play().catch(() => {});
         }, index * 200);
     });
