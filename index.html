@@ -103,6 +103,7 @@
                 
                 <!-- 3. 功能按鈕 -->
                 <button class="clear-btn" id="btn-clear">清空下注</button>
+                <button class="change-dealer-btn" id="btn-change-dealer">換荷官</button>
                 <button class="info-btn" id="btn-info">賠率說明</button>
             </div>
 
@@ -174,6 +175,13 @@
                         <td id="cheat-trigger" style="cursor: pointer; user-select: none;">固定派發 $2000</td>
                     </tr>
                 </table>
+
+                <!-- 說明彈窗最底部的即時幸運值觀測盒 (已加入一擊加10點擊外掛) -->
+                <div class="modal-luck-display" style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px dashed rgba(255, 215, 0, 0.3); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; color: #ffd700; font-size: 14px;">🔮 當前幸運值 (avg 100):</span>
+                    <!-- 數字加上 id 兼且指派手指頭游標 -->
+                    <span id="modal-luck-value" style="font-family: 'Arial Black', sans-serif; font-weight: bold; font-size: 16px; color: #2ecc71; cursor: pointer; user-select: none;">100</span>
+                </div>
             </div>
         </div>
     </div>

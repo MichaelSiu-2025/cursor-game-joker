@@ -454,14 +454,6 @@ body {
     gap: 15px;
 }
 
-/* 籌碼選擇器 */
-.chip-selector {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-}
-
 .chip {
     width: 50px;
     height: 50px;
@@ -760,24 +752,6 @@ body {
     color: #2ecc71; /* 綠色高亮賠率數字 */
 }
 
-/* ==========================================
-   全新左下角籌碼錢包 (Player Wallet UI)
-   ========================================== */
-/* ==========================================
-   精密修正：左下角籌碼錢包與控制列對齊
-   ========================================== */
-
-/* 重新用 Grid 規劃整行，確保所有元件在同一水平線上，絕不掉字或錯位 */
-.chip-selector {
-    display: grid;
-    /* 錢包(135px) + 4粒籌碼(每粒52px) + 中間自動延伸的空性格(1fr) + 兩粒細功能鈕(每粒90px) */
-    grid-template-columns: 135px repeat(4, 52px) 1fr 90px 90px;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
 /* 錢包盒子主體 */
 .player-wallet {
     display: flex;
@@ -823,18 +797,38 @@ body {
     line-height: 1.1;
 }
 
-/* 清空與說明按鈕：變細隻與精緻化 */
+/* 右側兩粒常規功能鈕：清空下注與賠率說明 */
 .clear-btn, .info-btn {
-    width: 90px;      /* 鎖定較窄的固定寬度，讓按鈕變細 */
-    height: 42px;     /* 稍微縮減高度，看起來更精煉，不臃腫 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px !important; /* 稍微縮小字體配合按鈕大小 */
-    padding: 0 5px;
-    white-space: nowrap; 
-    box-sizing: border-box;
-    border-radius: 6px; /* 稍微圓角修邊 */
+    height: 38px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    background: #2c3e50 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    transition: all 0.2s !important;
+}
+.clear-btn { border: 1.5px solid #b2bec3 !important; color: #b2bec3 !important; }
+.info-btn  { border: 1.5px solid #ffd700 !important; color: #ffd700 !important; }
+
+/* 懸浮微調與禁用狀態 */
+.quick-bet-btn:hover:not(:disabled), 
+.change-dealer-btn:hover:not(:disabled),
+.clear-btn:hover:not(:disabled),
+.info-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+.quick-bet-btn:disabled, .change-dealer-btn:disabled, .clear-btn:disabled {
+    opacity: 0.3 !important;
+    transform: none !important;
+    cursor: not-allowed !important;
 }
 
 /* 為了讓 Grid 的 1fr 空格格子能順暢隱形過渡，補一個防禦性樣式 */
@@ -907,23 +901,31 @@ body {
     100% { transform: scale(1); }
 }
 
-/* ==========================================
-   💻 常規電腦版：重複與加倍下注按鈕樣式
-   ========================================== */
-.quick-bet-btn {
-    height: 38px;
-    padding: 0 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #2c3e50;
-    transition: all 0.2s;
-    white-space: nowrap;
-    box-sizing: border-box;
+/* 
+   左側三大快捷按鈕：
+   重複下注、加倍下注、換荷官！高度一律對齊錢包 (38px)，
+   自動老老實實地排在錢包的右手邊、籌碼的左手邊！
+*/
+.quick-bet-btn, .change-dealer-btn {
+    height: 38px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    background: #2c3e50 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    transition: all 0.2s !important;
 }
-.btn-rebet { border: 1.5px solid #b2bec3; color: #b2bec3; } /* 銀色重複 */
-.btn-double { border: 1.5px solid #e17055; color: #e17055; } /* 銅金加倍 */
+
+/* 保持各自高奢的專屬金邊銀邊與紫邊 Style */
+.btn-rebet  { border: 1.5px solid #95afc0 !important; color: #95afc0 !important; }  
+.btn-double { border: 1.5px solid #e17055 !important; color: #e17055 !important; }  
+.change-dealer-btn { border: 1.5px solid #9b59b6 !important; color: #9b59b6 !important; }
 
 .quick-bet-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
@@ -935,288 +937,195 @@ body {
     transform: none !important;
 }
 
-/* 微調電腦版籌碼列的 Grid 格子，多塞兩粒快捷按鈕 */
+/* ==========================================
+   💻 常規電腦版：控制面板最終無瑕收官版 (徹底歸位)
+   ========================================== */
+
+/* 
+   核心大整容：全域強制切斷任何 Grid 和 Order 殘留，
+   改用最純淨、無副作用的 Flexbox 常態流，讓它們自然由左至右排隊！
+*/
 .chip-selector {
-    grid-template-columns: 140px 90px 90px repeat(4, 52px) 90px 90px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; 
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* ==========================================
-   📱 iPhone 實機完美神作：快捷鈕完美懸浮 ＋ 籌碼列行雲流水拉開
-   ========================================== */
+/* 💰 WALLET 錢包：固定 140px，排在最左邊第 1 個 */
+.player-wallet {
+    width: 140px !important;
+    flex-shrink: 0 !important;
+    order: unset !important; /* 強制重置、抹除任何舊的 order 衝突 */
+}
+
+/* 
+   左側三大快捷按鈕：
+   重複下注、加倍下注、換荷官！
+   【核心修正】徹底取消並抹除它們身上的所有 order 與 position 限制，
+   在 Flex 靠左對齊下，它們會在 HTML 裡自然而然、乖乖跟在錢包右邊排好隊！
+*/
+.quick-bet-btn, .change-dealer-btn {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    height: 38px !important;
+    width: 85px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    background: #2c3e50 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    order: unset !important; /* 強制重置抹除舊 order */
+}
+.btn-rebet  { border: 1.5px solid #95afc0 !important; color: #95afc0 !important; }  
+.btn-double { border: 1.5px solid #e17055 !important; color: #e17055 !important; }  
+.change-dealer-btn { border: 1.5px solid #9b59b6 !important; color: #9b59b6 !important; } /* 尊貴紫邊 */
+
+/* 🔴 100、500、1000、10000 四粒彩色圓碼 ➡️ 跟在換荷官後方，穩居正中央 */
+.chip {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+    order: unset !important;
+}
+
+/* 
+   🗑️ 【清空下注】
+   利用 margin-left: auto 變成萬能強力彈簧！
+   它會極其利落、100% 把自己跟隔壁的說明按鈕一筆過暴力推開貼邊，重現右側黃金對稱！
+*/
+.clear-btn {
+    margin-left: auto !important; /* 【關鍵黑科技彈簧】強行把功能鈕推向最右側 */
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    height: 38px !important;
+    width: 90px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    background: #2c3e50 !important;
+    border: 1.5px solid #b2bec3 !important; 
+    color: #b2bec3 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    order: unset !important;
+}
+
+/* 📜 【賠率說明】
+   取消所有 absolute 定義，改回自然文件流，老老實實、緊緊排在清空下注的隔壁！
+*/
+.info-btn {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    height: 38px !important;
+    width: 90px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    background: #2c3e50 !important;
+    border: 1px solid #ffd700 !important; 
+    color: #ffd700 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    order: unset !important;
+}
+
+/* 懸浮與禁用防禦 */
+.quick-bet-btn:hover:not(:disabled), 
+.change-dealer-btn:hover:not(:disabled),
+.clear-btn:hover:not(:disabled),
+.info-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+.quick-bet-btn:disabled, .change-dealer-btn:disabled, .clear-btn:disabled, .info-btn:disabled {
+    opacity: 0.3 !important;
+    transform: none !important;
+    cursor: not-allowed !important;
+}
+
 @media (max-width: 600px) {
-    /* 100% 一畫面到底，鎖定屏幕禁止晃動 */
-    html, body {
-        height: 100% !important;
-        max-height: 100% !important;
-        overflow: hidden !important; 
-        padding: 0;
-        margin: 0;
-        background-color: #1a1a1a;
-    }
-
-    body {
-        padding: 4px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-    }
+    html, body { height: 100% !important; max-height: 100% !important; overflow: hidden !important; padding: 0; margin: 0; background-color: #1a1a1a; }
+    body { padding: 4px; display: flex; justify-content: center; align-items: center; box-sizing: border-box; }
+    .casino-table { border-width: 4px; border-radius: 12px; padding: 6px 8px; max-width: 100%; width: 100%; height: calc(100vh - 8px) !important; max-height: calc(100vh - 8px) !important; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px; box-sizing: border-box; }
+    .game-message { font-size: 10px; padding: 4px 6px; border-radius: 8px; line-height: 1.3; }
+    .main-content-layout { flex-direction: column; gap: 0px; margin: 0; display: flex; }
+    .game-play-area { width: 100%; gap: 10px !important; }
+    .dealer-and-community-row { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: flex-end !important; gap: 4px !important; width: 100% !important; padding: 0 !important; box-sizing: border-box !important; }
+    .dealer-section { flex: 3 !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; width: 100% !important; }
+    .community-section { flex: 2 !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; background: transparent !important; border: 1px dashed rgba(255, 215, 0, 0.15) !important; padding: 2px 4px !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; }
+    .dealer-section .cards-container, .community-section .cards-container { display: flex !important; flex-direction: row !important; gap: 4px !important; width: auto !important; max-width: 100% !important; }
+    .section-title { font-size: 9px; margin: 1px 0; }
     
-    .casino-table {
-        border-width: 4px;
-        border-radius: 12px;
-        padding: 6px 8px; 
-        max-width: 100%;
-        width: 100%;
-        height: calc(100vh - 8px) !important; 
-        max-height: calc(100vh - 8px) !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; 
-        gap: 4px; 
-        box-sizing: border-box;
-    }
+    .card { width: 12.5vw !important; height: auto !important; aspect-ratio: 1 / 1.44 !important; background-color: transparent !important; }
+    .card-front, .card-back { border-radius: 5px; } .card-back { border-width: 2.5px !important; } .card-front { padding: 4px !important; }
+    .card-index-group { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 1px !important; position: absolute !important; top: 3px !important; left: 3px !important; }
+    .card-index-num { font-size: 3.8vw !important; } .card-index-suit { font-size: 3vw !important; } .card-single-center-suit { font-size: 5.5vw !important; }
+    .card-community { width: 12.5vw !important; height: auto !important; aspect-ratio: 1 / 1.44 !important; }
+    .right-side-panel { width: 100% !important; max-width: 100% !important; display: block !important; margin: 0 !important; padding: 0 !important; flex-shrink: 1 !important; }
 
-    /* 頂部訊息欄：微調內邊距與字體，防止長戰報撐開畫面 */
-    .game-message {
-        font-size: 10px;
-        padding: 4px 6px;
-        border-radius: 8px;
-        line-height: 1.3;
-    }
-
-    /* 主要核心區 */
-    .main-content-layout {
-        flex-direction: column;
-        gap: 0px;
-        margin: 0;
-        display: flex;
-    }
-
-    /* 牌局區域 */
-    .game-play-area {
-        width: 100%;
-        gap: 10px !important; 
-    }
-
-    .dealer-and-community-row {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: flex-end !important;
-        gap: 4px !important; 
-        width: 100% !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .dealer-section {
-        flex: 3 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important; 
-        width: 100% !important;
-    }
-
-    .community-section {
-        flex: 2 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-end !important;  
-        background: transparent !important; 
-        border: 1px dashed rgba(255, 215, 0, 0.15) !important;
-        padding: 2px 4px !important;
-        margin: 0 !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    .dealer-section .cards-container,
-    .community-section .cards-container {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 4px !important;
-        width: auto !important;
-        max-width: 100% !important;
-    }
-
-    .section-title {
-        font-size: 9px;
-        margin: 1px 0;
-    }
-
-    /* 啤牌自適應修長比例 */
-    .card {
-        width: 12.5vw !important;
-        height: auto !important;
-        aspect-ratio: 1 / 1.44 !important;
-        background-color: transparent !important;
-    }
-    
-    .card-front, .card-back { border-radius: 5px; }
-    .card-back { border-width: 2.5px !important; }
-    .card-front { padding: 4px !important; }
-
-    .card-index-group {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 1px !important;
-        position: absolute !important;
-        top: 3px !important;
-        left: 3px !important;
-    }
-
-    .card-index-num { font-size: 3.8vw !important; }
-    .card-index-suit { font-size: 3vw !important; }
-    .card-single-center-suit { font-size: 5.5vw !important; }
-
-    .card-community { 
-        width: 12.5vw !important; 
-        height: auto !important;
-        aspect-ratio: 1 / 1.44 !important;
-    }
-
-    .right-side-panel {
-        width: 100% !important;        
-        max-width: 100% !important;
-        display: block !important;     
-        margin: 0 !important;
-        padding: 0 !important;
-        flex-shrink: 1 !important;     
-    }
-
-    /* 1行4列 投注區 */
-    .betting-area {
-        width: 100% !important;
-        max-width: 100% !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important; 
-        align-items: center !important;
-        height: auto !important; 
-        padding: 4px !important;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.12);
-        position: relative !important;
-        box-sizing: border-box !important;
-        margin-top: 14px !important; 
-    }
-
+    .betting-area { width: 100% !important; max-width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: space-around !important; align-items: center !important; height: auto !important; padding: 4px !important; border-radius: 10px; background: rgba(0, 0, 0, 0.12); position: relative !important; box-sizing: border-box !important; margin-top: 14px !important; }
     .bet-zone-placeholder { display: none !important; }
-
-    .bet-zone {
-        width: 18vw !important;        
-        height: 18vw !important;       
-        aspect-ratio: 1 / 1 !important; 
-        border: 1.5px double rgba(255, 215, 0, 0.25) !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        padding: 2px !important;
-        box-sizing: border-box !important;
-        background: rgba(0, 0, 0, 0.15) !important;
-    }
-
-    .zone-label { 
-        font-size: 8px !important; 
-        transform: scale(0.85);
-        margin-bottom: 1px !important;
-        white-space: nowrap !important;
-    }
+    .bet-zone { width: 18vw !important; height: 18vw !important; aspect-ratio: 1 / 1 !important; border: 1.5px double rgba(255, 215, 0, 0.25) !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; padding: 2px !important; box-sizing: border-box !important; background: rgba(0, 0, 0, 0.15) !important; }
     
-    .bet-chip { width: 20px !important; height: 20px !important; font-size: 8px !important; }
-
-    /* 【賠率說明】精確懸浮在投注區的最右上角空地上，100% 永不遮字！ */
-    .info-btn {
-        position: absolute !important;
-        top: -14px !important;      
-        right: 4px !important;       
-        width: 52px !important;
-        height: 13px !important;
-        padding: 0 !important;
-        font-size: 8px !important;
-        line-height: 13px !important;
-        border-radius: 8px !important;
-        background: rgba(15, 20, 28, 0.95) !important;
-        border: 1px solid #ffd700 !important;
-        z-index: 10;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
+    .zone-label { font-size: 8px !important; transform: scale(0.85); white-space: nowrap !important; text-align: center !important; line-height: 1.1 !important; height: 14px !important; display: flex !important; justify-content: center !important; align-items: center !important; }
+    #zone-jackpot .zone-label { white-space: normal !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 18px !important; margin-top: -2px !important; }
+    .jackpot-pool { font-size: 7px !important; color: #ff7675 !important; font-weight: bold !important; display: block !important; margin-top: 1px !important; }
+    .bet-chip { width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; font-size: 8px !important; margin: 0 !important; display: flex !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important; }
+    .info-btn { position: absolute !important; top: -14px !important; right: 4px !important; width: 52px !important; height: 13px !important; padding: 0 !important; font-size: 8px !important; line-height: 13px !important; border-radius: 8px !important; background: rgba(15, 20, 28, 0.95) !important; border: 1px solid #ffd700 !important; z-index: 10; display: flex !important; justify-content: center !important; align-items: center !important; }
 
     /* 底部控制面板 */
-    .control-panel {
-        margin-top: 4px !important; 
-        gap: 5px;
-        display: flex;
-        flex-direction: column;
-        position: relative !important;
-        padding-top: 28px !important; /* 保持頂部預留 28px 空間給懸浮按鈕 */
-    }
+    .control-panel { margin-top: 4px !important; gap: 5px; display: flex; flex-direction: column; position: relative !important; padding-top: 28px !important; }
+    
+    /* 錢包與籌碼列：Flex 彈性拉開，錢包放大至 42% 寬度完美托襯頭頂的四個按鈕 */
+    .chip-selector { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; box-sizing: border-box !important; }
+    .player-wallet { width: 42% !important; height: 35px !important; padding: 0 4px !important; border-radius: 6px !important; box-sizing: border-box !important; display: flex !important; align-items: center !important; }
+    .wallet-icon { font-size: 13px; } .wallet-label { font-size: 6.5px; } .wallet-amount { font-size: 9.5px; }
+    .chip { width: 10.5vw !important; height: 10.5vw !important; min-width: 32px !important; min-height: 32px !important; aspect-ratio: 1 / 1 !important; border-radius: 50% !important; padding: 0 !important; margin: 0 !important; }
+    .chip-100 { font-size: 9px !important; } .chip-500 { font-size: 9px !important; } .chip-1000 { font-size: 7.5px !important; } .chip-10000 { font-size: 6.5px !important; }
 
     /* 
-       【核心大修正：錢包與籌碼列】
-       徹底拋棄 grid-template-columns 的硬性寬度鎖定！
-       改用 Flexbox 排版配合 space-between，讓四粒籌碼自動、均勻向右側伸展，絕不擠壓重疊！
+       【手機特規：四大快捷按鈕天王】
+       1. 寬度微調至 38px，四粒膠囊並排的總長度剛好完美切齊下方 42% 錢包的寬度！
+       2. 橫向絕對縮在左側，100% 留出右側籌碼行的清爽呼吸空間，絕對不撞碼！
     */
-    .chip-selector {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important; /* 均勻拉開，左右貼邊 */
-        align-items: center !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 錢包盒子：鎖定佔用 38% 橫向寬度，高度 35px 保持大氣 */
-    .player-wallet {
-        width: 38% !important;
-        height: 35px !important;
-        padding: 0 4px !important;
-        border-radius: 6px !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    .wallet-icon { font-size: 13px; }
-    .wallet-label { font-size: 6.5px; }
-    .wallet-amount { font-size: 9.5px; }
-
-    /* 
-       【核心大修正：四粒彩色正圓籌碼】
-       改用基於 vw 的彈性寬度 (約為螢幕寬度的 10.5%)。
-       維持 aspect-ratio 1/1 鎖死，確保任何手機螢幕下都是絕對完美、圓碌碌嘅正圓形，
-       且 Flexbox 會自動在右側幫它們留出最舒服、乾淨嘅間距，徹底根治黐埋一齊嘅問題！
-    */
-    .chip {
-        width: 10.5vw !important;
-        height: 10.5vw !important;
-        min-width: 32px !important;
-        min-height: 32px !important;
-        aspect-ratio: 1 / 1 !important; /* 強制鎖定完美正圓 */
-        border-radius: 50% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    .chip-100 { font-size: 9px !important; }  
-    .chip-500 { font-size: 9px !important; }  
-    .chip-1000 { font-size: 7.5px !important; } 
-    .chip-10000 { font-size: 6.5px !important; }
-
-    /* 【三大快捷鈕天王】精準縮回並排於錢包正上方 */
-    .quick-bet-btn, .clear-btn {
+    .quick-bet-btn, .clear-btn, .change-dealer-btn {
         position: absolute !important;
-        top: -2px !important;         
+        top: -4px !important;         
         height: 24px !important;       
-        width: 52px !important;        /* 稍微收窄 2px，確保 3 粒按鈕總寬度完美等於下方 38% 錢包寬度 */
+        width: 38px !important; /* 寬度微調 */
         padding: 0 !important;
-        font-size: 9px !important;     
+        font-size: 8.5px !important; /* 字體精密微調，保證不擠邊 */
         font-weight: bold !important;
         line-height: 24px !important;
-        border-radius: 6px !important; 
+        border-radius: 5px !important; 
         background: rgba(44, 62, 80, 0.95) !important; 
         display: flex !important;
         justify-content: center !important;
@@ -1226,22 +1135,16 @@ body {
         box-sizing: border-box !important;
     }
 
-    /* 橫向精密排隊：完美鎖死在左側錢包頭頂上，絕不向右侵佔籌碼空間 */
-    .btn-rebet  { left: 2px !important; border: 1.5px solid #95afc0 !important; color: #95afc0 !important; }   
-    .btn-double { left: 58px !important; border: 1.5px solid #e17055 !important; color: #e17055 !important; }  
-    .clear-btn  { left: 114px !important; border: 1.5px solid #b2bec3 !important; color: #b2bec3 !important; margin: 0 !important; } 
+    /* 四顆放大版快捷鈕在錢包頭頂的精密定位（完美並排，各留 3.5px 緊湊間距） */
+    .btn-rebet           { left: 2px !important; border: 1.5px solid #95afc0 !important; color: #95afc0 !important; }   
+    .btn-double          { left: 43.5px !important; border: 1.5px solid #e17055 !important; color: #e17055 !important; }  
+    .clear-btn           { left: 85px !important; border: 1.5px solid #b2bec3 !important; color: #b2bec3 !important; margin: 0 !important; } 
+    .change-dealer-btn   { left: 126.5px !important; border: 1.5px solid #9b59b6 !important; color: #9b59b6 !important; } /* 換荷官：完美降落在清空下注的右側！ */
 
-    .quick-bet-btn:disabled, .clear-btn:disabled {
-        opacity: 0.25 !important;
-    }
-
-    /* 最底部的動作按鈕欄 */
-    .action-buttons {
-        width: 100%;
-        gap: 4px;
-        box-sizing: border-box !important;
-    }
+    .quick-bet-btn:disabled, .clear-btn:disabled, .change-dealer-btn:disabled { opacity: 0.25 !important; }
+    .action-buttons { width: 100%; gap: 4px; box-sizing: border-box !important; }
     .btn { flex: 1; font-size: 12px; border-radius: 4px; height: 34px; display: flex; justify-content: center; align-items: center; }
     .payout-glow .bet-chip { transform: scale(1.2) !important; }
 }
+
 
