@@ -8,51 +8,51 @@
 </head>
 <body>
     <div class="casino-table">
-        <!-- 頂部資訊列 -->
-        <!-- 頂部資訊列 (已移走總資產，給予訊息全寬空間) -->
+        <!-- 頂部資訊列 (訊息全寬空間) -->
         <div class="status-bar">
             <div id="game-message" class="game-message" style="width: 100%; text-align: center;">請放入本注（Ante）開始遊戲</div>
         </div>
 
-        <!-- 主要遊戲核心區（分為左邊牌局、右邊投注） -->
-                <!-- 主要遊戲核心區（左邊純牌局、右邊公牌與投注） -->
+        <!-- 主要遊戲核心區（左邊純牌局、右邊投注） -->
         <div class="main-content-layout">
             
-            <!-- 左邊：主要牌局與公牌區域 (公牌已完美融入頂部) -->
+            <!-- 左邊：主要牌局區域 -->
             <div class="game-play-area">
-                <!-- 莊家與公牌全新並排容器 -->
+                <!-- 莊家與公牌水平並排容器 -->
                 <div class="dealer-and-community-row">
                     <!-- 莊家區 -->
                     <div class="dealer-section">
                         <div class="section-title">莊家 (DEALER) <span class="qualify-info">(Q+)</span></div>
                         <div class="cards-container" id="dealer-cards">
-                            <div class="card card-back"></div>
-                            <div class="card card-back"></div>
-                            <div class="card card-back"></div>
+                            <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
+                            <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
+                            <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
                         </div>
                     </div>
 
-                    <!-- 【全新搬遷】累進大獎公牌區 (與莊家並排) -->
+                    <!-- 累進大獎公牌區 -->
                     <div class="community-section">
                         <div class="community-title">JACKPOT 公牌</div>
                         <div class="cards-container" id="community-cards">
-                            <div class="card card-back card-community"></div>
-                            <div class="card card-back card-community"></div>
+                            <div class="card card-community"><div class="card-inner"><div class="card-back"></div></div></div>
+                            <div class="card card-community"><div class="card-inner"><div class="card-back"></div></div></div>
                         </div>
                     </div>
-                </div>
+                </div> <!-- 莊家與公牌行閉合 -->
 
                 <!-- 玩家區 -->
                 <div class="player-section">
                     <div class="cards-container" id="player-cards">
-                        <div class="card card-back"></div>
-                        <div class="card card-back"></div>
-                        <div class="card card-back"></div>
+                        <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
+                        <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
+                        <div class="card"><div class="card-inner"><div class="card-back"></div></div></div>
                     </div>
                     <div class="section-title">玩家 (PLAYER)</div>
                 </div>
-            </div>
-                <!-- 右下：投注區 (已精簡移除 PLAY 圈，剩下 4 個核心圈) -->
+            </div> <!-- 左邊牌局主區域閉合 -->
+
+            <!-- 右邊：全新整合面板 (已移除 PLAY 圈，剩下 4 個核心圈) -->
+            <div class="right-side-panel">
                 <div class="betting-area">
                     <!-- 第一行 -->
                     <div class="bet-zone side-bet" id="zone-jackpot">
@@ -74,14 +74,13 @@
                         <div class="bet-chip" id="chip-pairplus">0</div>
                     </div>
                 </div>
+            </div> <!-- 右邊面板閉合 -->
 
-
-        </div>
+        </div> <!-- 主要遊戲核心區 (main-content-layout) 閉合 -->
 
         <!-- 控制面板 (籌碼選擇 & 遊戲按鈕) -->
         <div class="control-panel">
-            <!-- 籌碼選擇 (更新為澳門官方高額配色面額) -->
-            <!-- 全新格子化籌碼與錢包控制區 -->
+            <!-- 全新網格化籌碼與錢包控制區 -->
             <div class="chip-selector">
                 <!-- 1. 左下角籌碼錢包 -->
                 <div class="player-wallet">
@@ -92,7 +91,7 @@
                     </div>
                 </div>
 
-                <!-- 2. 四粒籌碼 -->
+                <!-- 2. 四粒大額雙色籌碼 -->
                 <button class="chip chip-100 active-chip" onclick="selectChip(100)">100</button>
                 <button class="chip chip-500" onclick="selectChip(500)">500</button>
                 <button class="chip chip-1000" onclick="selectChip(1000)">1000</button>
@@ -103,17 +102,17 @@
                 <button class="info-btn" id="btn-info">賠率說明</button>
             </div>
 
-            <!-- 動作按鈕 (全面精簡文字防止手機爆字) -->
+            <!-- 動作按鈕 (精簡純中文版) -->
             <div class="action-buttons">
                 <button id="btn-deal" class="btn btn-deal">發牌</button>
                 <button id="btn-fold" class="btn btn-fold" disabled>棄牌</button>
                 <button id="btn-play" class="btn btn-play" disabled>加注</button>
-                <button id="btn-next" class="btn btn-next" disabled>下鋪</button>
+                <button id="btn-next" class="btn btn-next" disabled>下一局</button>
             </div>
         </div>
-    </div>
+    </div> <!-- .casino-table 閉合 -->
 
-        <!-- 【全新加入】賠率規則說明彈窗遮罩層 -->
+    <!-- 賠率規則說明彈窗遮罩層 -->
     <div id="info-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">

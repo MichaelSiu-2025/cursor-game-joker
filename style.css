@@ -81,12 +81,48 @@ body {
     align-items: center;
 }
 
+/* ==========================================
+   💻 常規電腦版：頂部莊家與公牌 3:2 黃金比例鎖定（防止位移）
+   ========================================== */
 .dealer-and-community-row {
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* 左右拉開 */
     align-items: flex-end;
-    gap: 40px; /* 電腦屏幕大，留出舒服的間距 */
+    gap: 40px; 
     width: 100%;
+    box-sizing: border-box;
+}
+
+/* 電腦版莊家區（拿3張牌）：分得 3 份寬度，文字與卡牌靠左對齊 */
+.dealer-and-community-row .dealer-section {
+    flex: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+/* 電腦版公牌區（拿2張牌）：分得 2 份寬度，文字與卡牌靠右對齊 */
+.dealer-and-community-row .community-section {
+    flex: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    background: rgba(255, 215, 0, 0.03) !important;
+    border: 1px dashed rgba(255, 215, 0, 0.2) !important;
+    border-radius: 15px;
+    padding: 10px;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+/* 確保電腦版兩邊的卡牌容器在各自的黃金格子內正常橫向排開 */
+.dealer-and-community-row .dealer-section .cards-container,
+.dealer-and-community-row .community-section .cards-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    width: auto !important;
 }
 
 .section-title {
@@ -111,30 +147,70 @@ body {
     align-items: center;
 }
 
-/* 啤牌本體 */
+/* ==========================================
+   🃏 終極完美版：3D 翻牌核心架構 (電腦/手機雙端無縫相容)
+   ========================================== */
+
+/* 啤牌外層盒子：電腦版鎖定國際高檔撲克 85px * 125px 黃金尺寸 */
 .card {
-    width: 85px;  
+    width: 85px;
     height: 125px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-    display: flex;
-    padding: 6px;
-    font-weight: bold;
-    position: relative;
-    transition: transform 0.3s ease;
-    overflow: hidden;
+    background-color: transparent !important; /* 盒子本身透明，靠內層呈現 */
+    perspective: 1000px; /* 3D 透視感 */
     flex-shrink: 0;
+    position: relative;
+    box-sizing: border-box;
 }
 
-/* 牌背專屬樣式 */
-.card-back {
+/* 啤牌 3D 內層盒子：主導翻轉 */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 帶有彈性的高檔翻牌感 */
+    transform-style: preserve-3d; /* 開啟 3D 空間 */
+}
+
+/* 當激活 .flipped 時，Y 軸轉身 180 度 */
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+/* 正面與背面的共通基礎：嚴格鎖定只在 .card-inner 的範圍內滿布，絕不允許越級外溢！ */
+.card-inner .card-front, 
+.card-inner .card-back {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    backface-visibility: hidden !important; /* 翻過去時背面自動隱形 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-sizing: border-box !important;
+}
+
+/* 牌背樣式 */
+.card-inner .card-back {
     background: radial-gradient(circle, #cc1111 20%, #880000 100%) !important;
     border: 4px solid white !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
 }
 
-/* 左上角組合：數字同花色橫排，再次放大大約 20% */
+/* 牌面正面 */
+.card-inner .card-front {
+    background-color: white !important;
+    transform: rotateY(180deg); 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6px 8px;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+
+/* 電腦版牌面內部字體與大花色排版 */
 .card-index-group {
     display: flex;
     flex-direction: row; 
@@ -144,37 +220,47 @@ body {
     position: absolute;
     top: 6px;
     left: 6px;
-    z-index: 2; /* 確保字體在花色上方 */
+    z-index: 2;
 }
 
 .card-index-num {
-    font-size: 32px; /* 再次放大的特大數字 */
+    font-size: 32px;
     font-family: 'Arial Black', Impact, sans-serif;
     letter-spacing: -1px;
 }
 
 .card-index-suit {
-    font-size: 24px; /* 再次放大的特大花色 */
-    margin-top: -2px; /* 微調對齊線 */
+    font-size: 24px;
+    margin-top: -2px;
 }
 
-/* 中央單一特大花色圖案 */
 .card-single-center-suit {
     position: absolute;
-    top: 55%; /* 稍微偏中下方，完美避開左上角的特大字 */
+    top: 55%; 
     left: 55%;
     transform: translate(-50%, -50%);
-    font-size: 42px; /* 極具張力的特大中央花色 */
+    font-size: 42px;
     pointer-events: none;
     opacity: 0.9;
 }
 
+
+/* 鎖定電腦版右側面板的黃金寬度，確保與下方的 2x2 網格完美貼合 */
+.right-side-panel {
+    width: 220px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0; /* 強制鎖死：絕對不允許被中間的牌局區域擠壓或推開！ */
+}
+
 /* 確保 3x2 下注網格在右側維持原樣並對齊 */
 .betting-area {
-    display: grid;
-    grid-template-columns: repeat(2, 95px);
-    grid-template-rows: repeat(3, 95px);
-    gap: 15px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 100px) !important; /* 電腦版維持精美 2x2 */
+    grid-template-rows: repeat(2, 100px) !important;
+    gap: 15px !important;
     background: rgba(0, 0, 0, 0.15);
     padding: 15px;
     border-radius: 20px;
@@ -742,13 +828,51 @@ body {
         gap: 12px !important; 
     }
 
-    /* 莊家與公牌水平合體列 */
+    /* ==========================================
+       📱 核心修正：頂部莊家與公牌黃金比例鎖定（徹底解決發牌移位）
+       ========================================== */
     .dealer-and-community-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 4px; 
-        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-end !important;
+        gap: 6px !important; 
+        width: 100% !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 莊家區（拿 3 張牌）：鎖定分得 3 份橫向寬度，靠左對齊 */
+    .dealer-section {
+        flex: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important; /* 文字同卡牌一律靠左，確保極致端正 */
+        width: 100% !important;
+    }
+
+    /* 公牌區（拿 2 張牌）：鎖定分得 2 份橫向寬度，靠右對齊 */
+    .community-section {
+        flex: 2 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;  /* 文字同卡牌一律靠右，絕不向左推擠莊家 */
+        background: transparent !important; 
+        border: 1px dashed rgba(255, 215, 0, 0.15) !important;
+        padding: 2px 4px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 確保兩邊的卡牌容器寬度自動填滿剛剛鎖定好的黃金比例，不外溢 */
+    .dealer-section .cards-container,
+    .community-section .cards-container {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px !important;
+        width: auto !important;
+        max-width: 100% !important;
     }
 
     .section-title {
@@ -756,20 +880,24 @@ body {
         margin: 1px 0;
     }
 
-    /* 啤牌尺寸：大字橫排標準的 12.5vw 奢華黃金修長比例 */
+    /* 手機版：純粹微調卡牌、大字、中央大花色嘅自適應 vw 比例即可，絕不重寫結構 */
     .card {
         width: 12.5vw !important;
         height: auto !important;
         aspect-ratio: 1 / 1.44 !important;
-        padding: 4px !important;
-        border-radius: 5px !important;
-        background-color: white !important;
-        display: flex !important;
-        flex-direction: column !important;
-        position: relative !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        background-color: transparent !important;
     }
     
+    .card-front, .card-back {
+        border-radius: 5px;
+    }
+    .card-back {
+        border-width: 2.5px !important;
+    }
+    .card-front {
+        padding: 4px !important;
+    }
+
     .card-index-group {
         display: flex !important;
         flex-direction: row !important;
@@ -779,25 +907,36 @@ body {
         top: 3px !important;
         left: 3px !important;
     }
-    .card-index-num { font-size: 3.8vw !important; font-family: 'Arial Black', Impact, sans-serif !important; }
-    .card-index-suit { font-size: 3vw !important; }
-    .card-single-center-suit { position: absolute !important; top: 55% !important; left: 55% !important; transform: translate(-50%, -50%) !important; font-size: 5.5vw !important; opacity: 0.95 !important; display: block !important; }
 
-    .community-section {
-        background: transparent !important; 
-        border: 1px dashed rgba(255, 215, 0, 0.15) !important;
-        padding: 2px !important;
-        margin: 0 !important;
+    .card-index-num { font-size: 3.8vw !important; }
+    .card-index-suit { font-size: 3vw !important; }
+    .card-single-center-suit { font-size: 5.5vw !important; }
+
+    .card-community { 
+        width: 12.5vw !important; 
+        height: auto !important;
+        aspect-ratio: 1 / 1.44 !important;
     }
-    .community-title { font-size: 8.5px !important; }
-    .card-community { width: 12.5vw !important; height: auto !important; aspect-ratio: 1 / 1.44 !important; }
+
+    /* ==========================================
+       📱 核心修正：手機直屏右側面板自適應（防止發牌出界）
+       ========================================== */
+    .right-side-panel {
+        width: 100% !important;        /* 徹底解除電腦版 220px 限制，100% 撐滿手機螢幕 */
+        max-width: 100% !important;
+        display: block !important;     /* 恢復常態文件流，不再死死控制位置 */
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 1 !important;     /* 允許隨螢幕寬度自由縮放，絕不向右推開出界 */
+    }
 
     /* 
-       【全新調整】4個投注圈一行過，黐緊在 PLAYER 字樣正下方，
-       縮小外邊距，徹底消除中間尷尬空洞的綠色色塊！
+       確保下方的 1行4列 投注區百分之百鎖死在 100% 寬度內，
+       這樣不論手牌怎麼翻轉，它都絕對不可能再出界！
     */
     .betting-area {
         width: 100% !important;
+        max-width: 100% !important;
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-around !important; 
@@ -808,7 +947,7 @@ body {
         background: rgba(0, 0, 0, 0.12);
         position: relative !important;
         box-sizing: border-box !important;
-        margin-top: 10px !important; /* 黐緊玩家牌與文字下方，縮減留白 */
+        margin-top: 10px !important; 
     }
 
     .bet-zone-placeholder { display: none !important; }

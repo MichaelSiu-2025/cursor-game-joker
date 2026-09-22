@@ -18,6 +18,32 @@ let bets = {
 let gameState = 'betting'; 
 
 // ==========================================
+// 1.5 全新加入：線上賭場專用高質感音效物件
+// ==========================================
+// 籌碼落注聲效 (經典的籌碼撞擊、推碼聲)
+const soundChip = new Audio('https://mixkit.co'); 
+// 啤牌翻牌聲效 (清脆的紙牌摩擦、翻牌聲)
+const soundCard = new Audio('https://google.com');
+
+// 設置防禦：微調音量，確保聲音清脆而不刺耳
+soundChip.volume = 0.6;
+soundCard.volume = 0.5;
+
+/**
+ * 瀏覽器安全解鎖大師 (專治 iOS Safari 預設靜音限制)
+ */
+function unlockAudio() {
+    // 透過玩家點擊網頁的一瞬間，在背景播放一次無聲的音訊，強行向 iPhone 爭取聲音權限
+    soundChip.play().then(() => { soundChip.pause(); soundChip.currentTime = 0; }).catch(() => {});
+    soundCard.play().then(() => { soundCard.pause(); soundCard.currentTime = 0; }).catch(() => {});
+    
+    // 解鎖一次後，立刻自我銷毀這個監聽器，絕不浪費手機 CPU 效能
+    document.removeEventListener('click', unlockAudio);
+}
+// 當玩家第一次在網頁上任何地方點擊時，立刻觸發解鎖
+document.addEventListener('click', unlockAudio);
+
+// ==========================================
 // 2. DOM 元素獲取 (UI Elements)
 // ==========================================
 const elTotalBalance = document.getElementById('total-balance');
@@ -102,6 +128,10 @@ function placeBet(zoneName) {
     totalBalance -= selectedChipValue;
     bets[zoneName] += selectedChipValue;
 
+    // 【音效注入】每次下注，重置聲音時間並清脆播放籌碼撞擊聲
+    soundChip.currentTime = 0;
+    soundChip.play().catch(() => {});
+
     // 5. 更新 UI
     updateUI();
 }
@@ -122,6 +152,10 @@ function clearAllBets() {
     bets.ante = 0;
     bets.play = 0;
     bets.sixcard = 0;
+
+    // 【音效注入】清空下注時響起收回籌碼聲
+    soundChip.currentTime = 0;
+    soundChip.play().catch(() => {});
 
     updateMessage("請放入本注（Ante）開始遊戲");
     updateUI();
@@ -254,93 +288,128 @@ function shuffleDeck() {
 // 7. 派牌與畫面渲染 (Dealing & Rendering)
 // ==========================================
 /**
- * 將一張牌的數據，轉化為 HTML 元素並塞入指定的 Container (特大橫排字+中央單花色版)
+ * 將一張牌的數據，轉化為 HTML 3D 翻牌元素並塞入指定的 Container
  * @param {Object} card - 啤牌物件
  * @param {HTMLElement} container - 要放入的 DOM 節點
- * @param {boolean} isFaceUp - 是否翻開 (面朝上)
+ * @param {boolean} isFaceUp - 是否立馬翻開（玩家牌和公牌直接翻，莊家牌先保持背面）
  */
 function renderCard(card, container, isFaceUp = true) {
     const cardEl = document.createElement('div');
+    cardEl.className = 'card';
     
-    if (!isFaceUp) {
-        cardEl.className = 'card card-back';
-    } else {
-        cardEl.className = 'card';
-        cardEl.style.color = card.color;
-        
-        cardEl.innerHTML = `
-            <!-- 左上角：再次放大的數字與花色橫排 -->
-            <div class="card-index-group">
-                <span class="card-index-num">${card.label}</span>
-                <span class="card-index-suit">${card.symbol}</span>
-            </div>
+    // 生成包含正反雙面的 3D 夾心結構
+    cardEl.innerHTML = `
+        <div class="card-inner">
+            <!-- 1. 牌背面 -->
+            <div class="card-back"></div>
             
-            <!-- 中央：統一只有一粒特大花色 -->
-            <div class="card-single-center-suit">
-                ${card.symbol}
+            <!-- 2. 牌正面 -->
+            <div class="card-front" style="color: ${card.color};">
+                <!-- 左上角橫排大字 -->
+                <div class="card-index-group">
+                    <span class="card-index-num">${card.label}</span>
+                    <span class="card-index-suit">${card.symbol}</span>
+                </div>
+                <!-- 中央特大花色 -->
+                <div class="card-single-center-suit">
+                    ${card.symbol}
+                </div>
             </div>
-        `;
-    }
+        </div>
+    `;
     
     container.appendChild(cardEl);
+    
+    // 如果需要翻開，延時 50 毫秒（給予網頁瀏覽器渲染時間）後加上 .flipped 觸發 3D 旋轉動畫
+    if (isFaceUp) {
+        setTimeout(() => {
+            cardEl.classList.add('flipped');
+
+            // 【音效注入】當卡牌真正執行 3D 轉身翻牌的一瞬間，同步響起清脆的撲克翻牌聲！
+            soundCard.currentTime = 0;
+            soundCard.play().catch(() => {});
+        }, 50);
+    }
+    
+    return cardEl; // 回傳這個節點，方便後續控制
 }
 
+
 /**
- * 處理「發牌 (Deal)」按鈕點擊事件
+ * 處理「發牌 (Deal)」按鈕點擊事件 (豪華 3D 依次序發牌版)
  */
 function dealCards() {
+    if (gameState !== 'betting' || bets.ante <= 0) return;
+
+    gameState = 'dealt';
+    updateMessage("正在發牌中...");
+
     // 模擬真實賭場：每局發牌時彩池自動累積增長
     jackpotPoolAmount += Math.floor(Math.random() * 40) + 10;
 
-    if (gameState !== 'betting' || bets.ante <= 0) return;
-
-    // 1. 切換遊戲狀態至 'dealt' (已發牌)
-    gameState = 'dealt';
-    updateMessage("牌已發出！請選擇【加注 (Play)】回應莊家，或者【棄牌 (Fold)】。");
-
-    // 2. 準備牌組
     createDeck();
     shuffleDeck();
 
-    // 3. 清空手牌數據
     playerHand = [];
     dealerHand = [];
     communityHand = [];
 
-    // 4. 分發啤牌數據 (富貴三寶各自拿 3 張，公牌 2 張)
     playerHand.push(deck.pop(), deck.pop(), deck.pop());
     dealerHand.push(deck.pop(), deck.pop(), deck.pop());
     communityHand.push(deck.pop(), deck.pop());
 
-    // 5. 清空舊的網頁牌面
-    document.getElementById('player-cards').innerHTML = '';
-    document.getElementById('dealer-cards').innerHTML = '';
-    document.getElementById('community-cards').innerHTML = '';
+    // 清空舊的牌面
+    const pContainer = document.getElementById('player-cards');
+    const dContainer = document.getElementById('dealer-cards');
+    const cContainer = document.getElementById('community-cards');
+    pContainer.innerHTML = '';
+    dContainer.innerHTML = '';
+    cContainer.innerHTML = '';
 
-    // 【全新加入】進入發牌階段，強行讓所有籌碼降落回原位，不彈起身
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.classList.remove('active-chip');
-    });
-
-    // 6. 渲染新牌到網頁畫面上
-    // 玩家牌：面朝上
-    playerHand.forEach(card => renderCard(card, document.getElementById('player-cards'), true));
-    
-    // 莊家牌：暫時面朝下 (保持神秘)
-    dealerHand.forEach(card => renderCard(card, document.getElementById('dealer-cards'), false));
-    
-    // Jackpot 公牌：面朝上 (買了邊注的玩家可以即時對獎)
-    communityHand.forEach(card => renderCard(card, document.getElementById('community-cards'), true));
-
-    // 7. 鎖定下注與發牌按鈕，開啟決策按鈕
+    // 鎖定所有按鈕
     elBtnDeal.disabled = true;
     elBtnClear.disabled = true;
-    elBtnFold.disabled = false;
-    elBtnPlay.disabled = false;
+    elBtnFold.disabled = true;
+    elBtnPlay.disabled = true;
+
+    // ===================================================
+    // 💡 賭場大師發牌時間差控制：玩家牌 ➡️ 莊家牌 ➡️ 公牌
+    // ===================================================
     
-    // 高亮提示 Play 圈，引導玩家決定是否放入同等注額
-    elZones.play.classList.add('active-zone');
-    elZones.ante.classList.remove('active-zone');
+    // 1. 先發玩家的三張牌，每隔 150 毫秒發一張，且直接翻開 (true)
+    playerHand.forEach((card, index) => {
+        setTimeout(() => {
+            renderCard(card, pContainer, true);
+        }, index * 150);
+    });
+
+    // 2. 隨後發莊家的三張牌，保持神秘面朝下 (false)
+    dealerHand.forEach((card, index) => {
+        setTimeout(() => {
+            renderCard(card, dContainer, false);
+        }, 450 + (index * 150));
+    });
+
+    // 3. 最後發 2 張公牌，直接翻開 (true)
+    communityHand.forEach((card, index) => {
+        setTimeout(() => {
+            renderCard(card, cContainer, true);
+            
+            // 當最後一張公牌也發放完畢時，解鎖玩家的控制按鈕！
+            if (index === communityHand.length - 1) {
+                updateMessage("牌已發出！請選擇【加注】回應莊家，或者【棄牌】。");
+                elBtnFold.disabled = false;
+                elBtnPlay.disabled = false;
+                elZones.play.classList.add('active-zone');
+                elZones.ante.classList.remove('active-zone');
+                
+                // 強行讓所有下方的籌碼降落回原位
+                document.querySelectorAll('.chip').forEach(chip => {
+                    chip.classList.remove('active-chip');
+                });
+            }
+        }, 900 + (index * 150));
+    });
 }
 
 // ==========================================
@@ -731,11 +800,32 @@ function settleSideBets() {
     };
 }
 
+/**
+ * 結算時，依次序優雅地翻開莊家的三張牌 (3D 翻牌修正版)
+ */
 function revealDealerCards() {
     const dealerContainer = document.getElementById('dealer-cards');
     dealerContainer.innerHTML = '';
-    dealerHand.forEach(card => renderCard(card, dealerContainer, true));
+    
+    // 先把這三張牌的面朝下結構渲染出來
+    const cardElements = [];
+    dealerHand.forEach(card => {
+        const el = renderCard(card, dealerContainer, false);
+        cardElements.push(el);
+    });
+    
+    // 每隔 200 毫秒，依次為這三張牌加上 .flipped，觸發 3D 轉身動畫！
+    cardElements.forEach((el, index) => {
+        setTimeout(() => {
+            el.classList.add('flipped');
+
+            // 【音效注入】莊家三張牌「啪、啪、啪」依次掀開時，同步一聲接一聲響起翻牌聲！
+            soundCard.currentTime = 0;
+            soundCard.play().catch(() => {});
+        }, index * 200);
+    });
 }
+
 
 function zeroAllBets() {
     bets.jackpot = 0;
@@ -762,33 +852,34 @@ function resetControlButtons() {
 }
 
 /**
- * 將檯面上的所有牌面清空，恢復成 3張莊家、2張公牌、3張玩家的「蓋牌」背面模樣
+ * 將檯面上的所有牌面清空，恢復成 3張莊家、2張公牌、3張玩家的「3D 蓋牌」背面模樣
  */
 function resetCardsToBack() {
     // 重置莊家牌背
     const dContainer = document.getElementById('dealer-cards');
-    dContainer.innerHTML = '<div class="card card-back"></div><div class="card card-back"></div><div class="card card-back"></div>';
+    dContainer.innerHTML = '<div class="card"><div class="card-inner"><div class="card-back"></div></div></div><div class="card"><div class="card-inner"><div class="card-back"></div></div></div><div class="card"><div class="card-inner"><div class="card-back"></div></div></div>';
     
     // 重置公牌牌背
     const cContainer = document.getElementById('community-cards');
-    cContainer.innerHTML = '<div class="card card-back card-community"></div><div class="card card-back card-community"></div>';
+    cContainer.innerHTML = '<div class="card card-community"><div class="card-inner"><div class="card-back"></div></div></div><div class="card card-community"><div class="card-inner"><div class="card-back"></div></div></div>';
     
     // 重置玩家牌背
     const pContainer = document.getElementById('player-cards');
-    pContainer.innerHTML = '<div class="card card-back"></div><div class="card card-back"></div><div class="card card-back"></div>';
+    pContainer.innerHTML = '<div class="card"><div class="card-inner"><div class="card-back"></div></div></div><div class="card"><div class="card-inner"><div class="card-back"></div></div></div><div class="card"><div class="card-inner"><div class="card-back"></div></div></div>';
     
-    // 【全新加入】恢復下注階段時，讓目前預設的面額籌碼重新高亮彈起
-    const defaultChip = document.querySelector(`.chip-${selectedChipValue}`);
-    if (defaultChip) {
-        defaultChip.classList.add('active-chip');
-    }
-
     // 進入全新下注階段
     gameState = 'betting';
     elBtnNext.disabled = true; // 蓋牌後禁用下一局按鈕
     updateMessage("請放入本注（Ante）開始遊戲");
     updateUI();
+    
+    // 恢復目前預設的面額籌碼重新高亮彈起
+    const defaultChip = document.querySelector(`.chip-${selectedChipValue}`);
+    if (defaultChip) {
+        defaultChip.classList.add('active-chip');
+    }
 }
+
 
 
 // ==========================================
