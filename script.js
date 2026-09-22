@@ -913,7 +913,22 @@ async function play() {
     let dealerEval = evaluate3CardHand(dealerHand);
     let summaryMessage = `你手牌：【${playerEval.name}】。莊家手牌：【${dealerEval.name}】。`;
     
-    let dealerQualifies = (dealerEval.rank > HAND_RANK.HIGH_CARD) || (dealerEval.values >= 12);
+    // ==========================================
+    // 核心大修正：【不依賴底層點數 ── 100% 鋼鐵文字成局防線】
+    // 我們直接檢查莊家三張牌的牌面大字 (label 或者是 rank)
+    // 只要出現過 'Q', 'K', 'A' 或者是【對子或以上大牌】，莊家就 100% 算成局！
+    // ==========================================
+    
+    // 1. 透過 map 同步抽取莊家三張牌在畫面上印出來的文字 (確保能同時抓到 label 或 rank 屬性)
+    const dealerLabels = dealerHand.map(c => (c.label || c.rank || "").toString().toUpperCase());
+    
+    // 2. 檢查莊家這三張牌裡面，有沒有包含 'Q'、'K'、或者 'A' 的任何一張
+    const hasQKA = dealerLabels.includes('Q') || dealerLabels.includes('K') || dealerLabels.includes('A');
+
+    // 3. 鋼鐵文字判定：
+    // 只要莊家是【對子或以上大牌 (rank > HAND_RANK.HIGH_CARD)】，
+    // 或者【手牌裡有買中 Q、K、A 任何一張散牌】，莊家就 100% 算成功成局！
+    let dealerQualifies = (dealerEval.rank > HAND_RANK.HIGH_CARD) || hasQKA;
     
     // 用來記錄各個投注圈【各自贏得或退回的總彩金本利和】
     let winDetails = { jackpot: 0, sixcard: 0, ante: 0, pairplus: 0, play: 0 };
