@@ -941,10 +941,7 @@ body {
 }
 
 /* ==========================================
-   📱 iPhone 實機完美神作：下注與控制列完美黐緊玩家牌下方
-   ========================================== */
-/* ==========================================
-   📱 iPhone 實機完美神作：快捷鈕懸浮 ＋ 投注區全開不出界
+   📱 iPhone 實機完美神作：快捷鈕完美懸浮 ＋ 籌碼列行雲流水拉開
    ========================================== */
 @media (max-width: 600px) {
     /* 100% 一畫面到底，鎖定屏幕禁止晃動 */
@@ -1103,7 +1100,7 @@ body {
         background: rgba(0, 0, 0, 0.12);
         position: relative !important;
         box-sizing: border-box !important;
-        margin-top: 14px !important; /* 【關鍵】頂部預留 14px 給懸浮的賠率說明 */
+        margin-top: 14px !important; 
     }
 
     .bet-zone-placeholder { display: none !important; }
@@ -1131,7 +1128,7 @@ body {
     
     .bet-chip { width: 20px !important; height: 20px !important; font-size: 8px !important; }
 
-    /* 【核心修正：賠率說明】精確懸浮在投注區的最右上角空地上，100% 永不遮字！ */
+    /* 【賠率說明】精確懸浮在投注區的最右上角空地上，100% 永不遮字！ */
     .info-btn {
         position: absolute !important;
         top: -14px !important;      
@@ -1150,96 +1147,101 @@ body {
         align-items: center !important;
     }
 
-    /* 
-       【核心修正】底部控制面板
-       開啟相對定位，並在頂部預留 20px 空間，完美用作重複與加倍快捷按鈕的懸浮基地！
-    */
+    /* 底部控制面板 */
     .control-panel {
         margin-top: 4px !important; 
         gap: 5px;
         display: flex;
         flex-direction: column;
         position: relative !important;
-        padding-top: 20px !important; /* 預留上方空間 */
+        padding-top: 28px !important; /* 保持頂部預留 28px 空間給懸浮按鈕 */
     }
 
-    /* 錢包與籌碼列：回歸最純淨的手機 6 格 Grid，籌碼與細清空按鈕完美原地歸位！ */
+    /* 
+       【核心大修正：錢包與籌碼列】
+       徹底拋棄 grid-template-columns 的硬性寬度鎖定！
+       改用 Flexbox 排版配合 space-between，讓四粒籌碼自動、均勻向右側伸展，絕不擠壓重疊！
+    */
     .chip-selector {
-        display: grid !important;
-        grid-template-columns: 1.3fr repeat(4, 34px) 42px !important; 
-        gap: 5px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important; /* 均勻拉開，左右貼邊 */
         align-items: center !important;
         width: 100% !important;
+        box-sizing: border-box !important;
     }
 
+    /* 錢包盒子：鎖定佔用 38% 橫向寬度，高度 35px 保持大氣 */
     .player-wallet {
-        width: 100% !important;
-        height: 34px; 
-        padding: 0 4px;
-        border-radius: 6px;
+        width: 38% !important;
+        height: 35px !important;
+        padding: 0 4px !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
     }
     .wallet-icon { font-size: 13px; }
     .wallet-label { font-size: 6.5px; }
     .wallet-amount { font-size: 9.5px; }
 
+    /* 
+       【核心大修正：四粒彩色正圓籌碼】
+       改用基於 vw 的彈性寬度 (約為螢幕寬度的 10.5%)。
+       維持 aspect-ratio 1/1 鎖死，確保任何手機螢幕下都是絕對完美、圓碌碌嘅正圓形，
+       且 Flexbox 會自動在右側幫它們留出最舒服、乾淨嘅間距，徹底根治黐埋一齊嘅問題！
+    */
     .chip {
-        width: 34px !important;
-        height: 34px !important;
-        min-width: 34px !important;
+        width: 10.5vw !important;
+        height: 10.5vw !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        aspect-ratio: 1 / 1 !important; /* 強制鎖定完美正圓 */
+        border-radius: 50% !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     .chip-100 { font-size: 9px !important; }  
     .chip-500 { font-size: 9px !important; }  
     .chip-1000 { font-size: 7.5px !important; } 
     .chip-10000 { font-size: 6.5px !important; }
 
-    .clear-btn {
-        width: 42px !important;
-        height: 34px !important;
-        font-size: 8.5px !important;
-        border-radius: 4px !important;
-    }
-
-    /* 
-       【全新手機特規：快捷下注按鈕】
-       利用絕對定位化身為精緻的小膠囊鈕，完美並排懸浮在 WALLET 錢包與 100 籌碼的正上方空地！
-       100% 絕不霸占任何下方格數，也不會推擠任何元件！
-    */
-    .quick-bet-btn {
+    /* 【三大快捷鈕天王】精準縮回並排於錢包正上方 */
+    .quick-bet-btn, .clear-btn {
         position: absolute !important;
-        top: 0px !important;          /* 穩穩坐在控制面板的最頂端外邊緣 */
-        height: 15px !important;
-        padding: 0 6px !important;
-        font-size: 8.5px !important;
-        line-height: 15px !important;
-        border-radius: 10px !important;
-        background: rgba(44, 62, 80, 0.95) !important;
+        top: -2px !important;         
+        height: 24px !important;       
+        width: 52px !important;        /* 稍微收窄 2px，確保 3 粒按鈕總寬度完美等於下方 38% 錢包寬度 */
+        padding: 0 !important;
+        font-size: 9px !important;     
+        font-weight: bold !important;
+        line-height: 24px !important;
+        border-radius: 6px !important; 
+        background: rgba(44, 62, 80, 0.95) !important; 
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         white-space: nowrap !important;
         z-index: 5;
+        box-sizing: border-box !important;
     }
-    /* 精密水平定位：重複下注在錢包上方左邊，加倍下注在錢包上方右邊 */
-    .btn-rebet { left: 4px !important; width: 58px !important; }  
-    .btn-double { left: 66px !important; width: 58px !important; } 
 
-    /* 最底部的動作按鈕欄：比例大氣端正 */
+    /* 橫向精密排隊：完美鎖死在左側錢包頭頂上，絕不向右侵佔籌碼空間 */
+    .btn-rebet  { left: 2px !important; border: 1.5px solid #95afc0 !important; color: #95afc0 !important; }   
+    .btn-double { left: 58px !important; border: 1.5px solid #e17055 !important; color: #e17055 !important; }  
+    .clear-btn  { left: 114px !important; border: 1.5px solid #b2bec3 !important; color: #b2bec3 !important; margin: 0 !important; } 
+
+    .quick-bet-btn:disabled, .clear-btn:disabled {
+        opacity: 0.25 !important;
+    }
+
+    /* 最底部的動作按鈕欄 */
     .action-buttons {
         width: 100%;
         gap: 4px;
+        box-sizing: border-box !important;
     }
-
-    .btn {
-        flex: 1;
-        font-size: 12px;
-        border-radius: 4px;
-        height: 34px; 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .payout-glow .bet-chip {
-        transform: scale(1.2) !important;
-    }
+    .btn { flex: 1; font-size: 12px; border-radius: 4px; height: 34px; display: flex; justify-content: center; align-items: center; }
+    .payout-glow .bet-chip { transform: scale(1.2) !important; }
 }
+

@@ -34,7 +34,7 @@ const soundLosing = new Audio('losing.mp3'); // <-- 【全新加入】輸錢沮�
 const soundDraw = new Audio('draw.mp3'); // <-- 【全新加入】和局走牌音效
 const soundCoin = new Audio('coin.mp3'); // <-- 全新加入：籌碼飛入錢包的吸金撞擊聲
 // 【全新加入】背景音樂物件
-const bgm = new Audio('backgroundMusic1.mp3'); 
+const bgm = new Audio('XXXbackgroundMusic1.mp3'); 
 bgm.loop = true;          // 核心設定：開啟無限循環播放！
 bgm.volume = 0.2;        // 防禦設定：背景音樂音量設為 25%，既能優雅襯托氣氛，又絕對不會刺耳或蓋過遊戲音效！
 
